@@ -1,0 +1,75 @@
+﻿@model HR_Products.ViewModels.LeaveSchemeTypeFormViewModel
+@{
+    ViewData["Title"] = "Create Scheme Type Detail";
+}
+
+<div class="row">
+    <div class="col-md-8 mx-auto rounded border p-3">
+        <h2 class="text-center mb-5">New SchemeType Detail</h2>
+
+        <form asp-action="CreateDetlType" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="SCHEME_ID" />
+            <input type="hidden" asp-for="TYPE_ID" /> <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Leave Scheme</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="LeaveScheme.SCHEME_NAME" readonly />
+                    <span asp-validation-for="LeaveScheme.SCHEME_NAME" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Leave Type Name</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="LeaveSchemeType.LEAVE_TYPE_NAME" readonly />
+                    <span asp-validation-for="LeaveSchemeType.LEAVE_TYPE_NAME" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">From Year</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="FROM_YEAR" required aria-required="true">
+                    <span asp-validation-for="FROM_YEAR" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">To Year</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="TO_YEAR" required aria-required="true">
+                    <span asp-validation-for="TO_YEAR" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Days Per Year</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="DAYS_PER_YEAR" required aria-required="true">
+                    <span asp-validation-for="DAYS_PER_YEAR" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">UpdatedAt</label>
+                <div class="col-sm-8">
+                    <input asp-for="UPDATED_AT" class="form-control-plaintext" readonly>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="offset-sm-4 col-sm-4 d-grid">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                <div class="col-sm-4 d-grid">
+                    <button class="btn btn-outline-warning btn-md" style="width: 191px;" onclick="window.history.back();">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

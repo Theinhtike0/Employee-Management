@@ -1,0 +1,58 @@
+﻿@model HR_Products.ViewModels.LeaveSchemeDetailsViewModel
+
+@{
+    ViewData["Title"] = "Leave Scheme Details";
+    int displayTypeId = 1; // Initialize a counter variable
+}
+
+<h2 class="text-center mb-5">Leave Scheme Details</h2>
+
+<div class="mb-4">
+    <h4>Scheme ID: @Model.LeaveScheme.SCHEME_ID</h4>
+    <h4>Scheme Name: @Model.LeaveScheme.SCHEME_NAME</h4>
+</div>
+
+<div class="row mb-5 justify-content-between align-items-center">
+    <div class="col-auto">
+        <div class="d-grid">
+            <a class="btn btn-primary" asp-controller="LeaveScheme" asp-action="CreateDetail" asp-route-id="@Model.LeaveScheme.SCHEME_ID">Add Leave SchemeType</a>
+        </div>
+    </div>
+  
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Scheme Type ID</th>
+            <th>Scheme Name</th>
+            <th>Leave Type Name</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.LeaveSchemeTypes)
+{
+    <tr>
+        <td>@displayTypeId</td>
+        <td>@item.SCHEME_NAME</td>
+        <td>@item.LEAVE_TYPE_NAME</td>
+        <td>@item.CREATED_AT.ToShortDateString()</td>
+        <td>@item.UPDATED_AT.ToShortDateString()</td>
+        <td style="white-space: nowrap">
+            <a class="btn btn-danger btn-sm" asp-controller="LeaveScheme" asp-action="Deleteschtype" onclick="return window.confirm('Are you sure to delete this record')" asp-route-id="@item.TYPE_ID">Delete</a>
+            <a class="btn btn-success btn-sm" asp-controller="LeaveScheme" asp-action="Detailstype" asp-route-id="@item.TYPE_ID" asp-route-leaveTypeName="@item.LEAVE_TYPE_NAME">Details</a>
+        </td>
+    </tr>
+        displayTypeId++;
+    
+}
+    </tbody>
+</table>
+
+<!-- Move the Back button to the bottom, aligned to the left -->
+<div class="mt-5 d-flex justify-content-start">
+    <button class="btn btn-outline-warning btn-md" style="width: 191px;" onclick="window.history.back();">Back</button>
+</div>

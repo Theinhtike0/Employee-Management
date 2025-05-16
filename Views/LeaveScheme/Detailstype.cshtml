@@ -1,0 +1,64 @@
+﻿@model HR_Products.ViewModels.LeaveSchemeDetailsViewModel
+
+@{
+    ViewData["Title"] = "Leave Scheme Details";
+    int detailCounter = 1; // Initialize a counter variable
+}
+
+<h2 class="text-center mb-5">Leave Scheme Details</h2>
+
+<div class="mb-4">
+    <h4>Scheme Name: @Model.LeaveScheme.SCHEME_NAME</h4>
+    <h4>Leave Type Name: @ViewBag.InitialLeaveTypeName</h4>
+</div>
+
+<div class="row mb-5 justify-content-between align-items-center">
+    <div class="col-auto">
+        <div class="d-grid">
+            <a class="btn btn-primary"
+               asp-controller="LeaveScheme"
+               asp-action="CreateDetlType"
+               asp-route-schemeId="@Model.LeaveScheme.SCHEME_ID"
+               asp-route-leaveTypeName="@ViewBag.InitialLeaveTypeName">
+                Add Scheme Type Detail
+            </a>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Detail ID</th>
+            <th>Leave Type Name</th>
+            <th>From Year</th>
+            <th>To Year</th>
+            <th>Days Per Year</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.LeaveSchemeTypeDetl)
+        {
+            <tr>
+                <td>@detailCounter</td> @* Display the counter *@
+                <td>@item.LEAVE_TYPE_NAME</td>
+                <td>@item.FROM_YEAR</td>
+                <td>@item.TO_YEAR</td>
+                <td>@item.DAYS_PER_YEAR</td>
+                <td>@item.CREATED_AT.ToShortDateString()</td>
+                <td>@item.UPDATED_AT.ToShortDateString()</td>
+                <td style="white-space: nowrap">
+                    <a class="btn btn-danger btn-sm" asp-controller="LeaveScheme" asp-action="Deleteschtypedtl" onclick="return window.confirm('Are you sure to delete this record')" asp-route-id="@item.DETL_ID">Delete</a>
+                </td>
+            </tr>
+             detailCounter++; 
+        }
+    </tbody>
+</table>
+
+<div class="mt-5 d-flex justify-content-start">
+    <button class="btn btn-outline-warning btn-md" style="width: 155px;" onclick="window.history.back();">Back</button>
+</div>

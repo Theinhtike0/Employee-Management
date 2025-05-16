@@ -1,0 +1,47 @@
+﻿<h2 class="text-center mb-5">List of Leave Type</h2>
+
+<div class="row mb-5">
+    <div class="col">
+        <a class="btn btn-primary" asp-controller="LeaveType" asp-action="Create">Add Leave Type</a>
+    </div>
+    <div class="col text-end">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search Leave Type..." />
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>SN</th>
+            <th>Leave Type</th>
+            <th>Description</th>
+            <th>Is_Paid</th>
+            <th>Days Per Year</th>
+            <th>Accrual Method</th>
+            <th>Carry Limit</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.LEAV_TYPE_ID</td>
+                <td>@item.LEAV_TYPE_NAME</td>
+                <td>@item.DESCRIPTION</td>
+                <td>@item.IS_PAID</td>
+                <td>@item.DEFAULT_DAY_PER_YEAR</td>
+                <td>@item.ACCRUAL_METHOD</td>
+                <td>@item.CARRY_OVER_LIMIT</td>
+                <td style="white-space: nowrap">
+                    <a class="btn btn-warning btn-sm" asp-controller="LeaveType" asp-action="Edit" asp-route-id="@item.LEAV_TYPE_ID">Edit</a>
+                    <a class="btn btn-danger btn-sm" asp-controller="LeaveType" asp-action="Delete" onclick="return window.confirm('Are you sure to delete this record')" asp-route-id="@item.LEAV_TYPE_ID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="mt-5 d-flex justify-content-start">
+    <a class="btn btn-outline-warning btn-md" style="width: 123px;" asp-controller="Admin" asp-action="Dashboard" role="button">Back</a>
+</div>

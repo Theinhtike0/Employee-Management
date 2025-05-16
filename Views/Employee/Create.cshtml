@@ -1,0 +1,182 @@
+﻿@model HR_Products.Models.Entitites.EmployeeProfile
+@{
+    ViewData["Title"] = "Create Employee";
+}
+
+<div class="row">
+    <div class="col-md-8 mx-auto rounded border p-3">
+        <h2 class="text-center mb-5">New Employee</h2>
+        <form method="post" enctype="multipart/form-data">
+            <!-- Employee Code -->
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Employee Code</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="EmpeCode" required aria-required="true">
+                    <span asp-validation-for="EmpeCode" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <!-- Employee Name -->
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Name</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="EmpeName" required aria-required="true">
+                    <span asp-validation-for="EmpeName" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Date of Birth</label>
+                <div class="col-sm-8">
+                    <input type="date" class="form-control" asp-for="DateOfBirth">
+                    <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <!-- Gender -->
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Gender</label>
+                <div class="col-sm-8">
+                    <select class="form-select" asp-for="Gender" required aria-required="true">
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                        <option value="O">Other</option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Email</label>
+                <div class="col-sm-8">
+                    <input type="email" class="form-control" asp-for="Email" required aria-required="true">
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Phone Number</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="PhoneNo">
+                    <span asp-validation-for="PhoneNo" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Emergency Contact Name</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="EmgcConctName">
+                    <span asp-validation-for="EmgcConctName" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Emergency Contact Phone</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="EmgcConctPhone">
+                    <span asp-validation-for="EmgcConctPhone" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <!-- Job Title -->
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Job Title</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="JobTitle" required aria-required="true">
+                    <span asp-validation-for="JobTitle" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <!-- Department ID -->
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Department</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="DeptId" required aria-required="true">
+                    <span asp-validation-for="DeptId" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <!-- Join Date -->
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Join Date</label>
+                <div class="col-sm-8">
+                    <input type="date" class="form-control" asp-for="JoinDate" required aria-required="true">
+                    <span asp-validation-for="JoinDate" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Status</label>
+                <div class="col-sm-8">
+                    <select class="form-select" asp-for="Status" required aria-required="true">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label asp-for="TerminateDate" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-8">
+                    <input type="date" asp-for="TerminateDate" class="form-control">
+                    <span asp-validation-for="TerminateDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label asp-for="City" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-8">
+                    <input asp-for="City" class="form-control">
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label asp-for="State" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-8">
+                    <input asp-for="State" class="form-control">
+                    <span asp-validation-for="State" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label asp-for="PostalCode" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-8">
+                    <input asp-for="PostalCode" class="form-control">
+                    <span asp-validation-for="PostalCode" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label asp-for="Country" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-8">
+                    <input asp-for="Country" class="form-control">
+                    <span asp-validation-for="Country" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label asp-for="ProfilePic" class="col-sm-4 col-form-label"></label>
+                <div class="col-sm-8">
+                    <input asp-for="ProfilePic" class="form-control">
+                    <span asp-validation-for="ProfilePic" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Submit and Cancel Buttons -->
+            <div class="row">
+                <div class="offset-sm-4 col-sm-4 d-grid">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                <div class="col-sm-4 d-grid">
+                    <a class="btn btn-outline-warning" asp-controller="Employee" asp-action="Index" role="button">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,42 @@
+﻿<h2 class="text-center mb-5">List of Leave Scheme</h2>
+
+<div class="row mb-5">
+    <div class="col">
+        <a class="btn btn-primary" asp-controller="LeaveScheme" asp-action="Create">Add Leave Scheme</a>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Scheme ID</th>
+            <th>Scheme Name</th>
+            <th>Description</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.SCHEME_ID</td>
+                <td>@item.SCHEME_NAME</td>
+                <td>@item.DESCRIPTION</td>
+                <td>@item.CREATED_AT.ToShortDateString()</td>
+                <td>@item.UPDATED_AT.ToShortDateString()</td>
+                <td style="white-space: nowrap">
+                    <a class="btn btn-warning btn-sm" asp-controller="LeaveScheme" asp-action="Edit" asp-route-id="@item.SCHEME_ID">Edit</a>
+                    <a class="btn btn-danger btn-sm" asp-controller="LeaveScheme" asp-action="Delete" onclick="return window.confirm('Are you sure to delete this record')" asp-route-id="@item.SCHEME_ID">Delete</a>
+                    <a class="btn btn-success btn-sm" asp-controller="LeaveScheme" asp-action="Details" asp-route-id="@item.SCHEME_ID">Detail</a>
+                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="mt-5 d-flex justify-content-start">
+    <a class="btn btn-outline-warning btn-md" style="width: 146px;" asp-controller="Admin" asp-action="Dashboard" role="button">Back</a>
+</div>

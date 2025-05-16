@@ -1,0 +1,48 @@
+﻿@model HR_Products.ViewModels.LeaveSchemeTypeFormViewModel
+@{
+    ViewData["Title"] = "Edit Leave SchemeType";
+}
+
+<div class="row">
+    <div class="col-md-8 mx-auto rounded border p-3">
+        <h2 class="text-center mb-5">New Leave SchemeType</h2>
+
+        <form asp-action="CreateDetail" method="post" enctype="multipart/form-data">
+            <!-- 🛠 Hidden SCHEME_ID -->
+            <input type="hidden" asp-for="LeaveSchemeType.SCHEME_ID" />
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Leave Scheme</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="LeaveSchemeType.SCHEME_NAME" readonly />
+                    <span asp-validation-for="LeaveSchemeType.SCHEME_NAME" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Leave Type</label>
+                <div class="col-sm-8">
+                    <select class="form-control" asp-for="LeaveSchemeType.LEAVE_TYPE_ID" asp-items="Model.LeaveTypes" required>
+                        <option value="">-- Select Leave Type --</option>
+                    </select>
+                    <span asp-validation-for="LeaveSchemeType.LEAVE_TYPE_ID" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="offset-sm-4 col-sm-4 d-grid">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                <div class="col-sm-4 d-grid">
+                    <a class="btn btn-outline-warning" asp-controller="LeaveScheme" asp-action="Index" role="button">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
