@@ -1,0 +1,34 @@
+﻿
+<div class="container mt-4">
+    <h2>Manage Holidays</h2>
+    <a href="@Url.Action("Create")" class="btn btn-primary mb-3">Add Holiday</a>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Holiday Name</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var h in Model)
+            {
+                <tr>
+                    <td>@h.HolidayName</td>
+                    <td>@h.HolidayDate.ToString("yyyy-MM-dd")</td>
+                    <td>@h.Description</td>
+                    <td>
+                        <a href="@Url.Action("Delete", new { id = h.HolidayId })" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="mt-5 d-flex justify-content-start">
+        <a class="btn btn-outline-warning btn-md" style="width: 123px;" asp-controller="Admin" asp-action="Dashboard" role="button">Back</a>
+    </div>
+</div>
+
+

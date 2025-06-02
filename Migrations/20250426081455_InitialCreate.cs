@@ -229,60 +229,60 @@ namespace HR_Products.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "LEAV_SCHEME_TYPE",
-                columns: table => new
-                {
-                    TYPE_ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SCHEME_ID = table.Column<int>(type: "int", nullable: false),
-                    SCHEME_NAME = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LEAVE_TYPE_ID = table.Column<int>(type: "int", nullable: false),
-                    CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LEAV_SCHEME_TYPE", x => x.TYPE_ID);
-                    table.ForeignKey(
-                        name: "FK_LEAV_SCHEME_TYPE_LEAV_SCHEME_SCHEME_ID",
-                        column: x => x.SCHEME_ID,
-                        principalTable: "LEAV_SCHEME",
-                        principalColumn: "SCHEME_ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_LEAV_SCHEME_TYPE_LEAV_TYPE_LEAVE_TYPE_ID",
-                        column: x => x.LEAVE_TYPE_ID,
-                        principalTable: "LEAV_TYPE",
-                        principalColumn: "LEAV_TYPE_ID",
-                        onDelete: ReferentialAction.Restrict);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "LEAV_SCHEME_TYPE",
+            //    columns: table => new
+            //    {
+            //        TYPE_ID = table.Column<int>(type: "int", nullable: false)
+            //            .Annotation("SqlServer:Identity", "1, 1"),
+            //        SCHEME_ID = table.Column<int>(type: "int", nullable: false),
+            //        SCHEME_NAME = table.Column<string>(type: "nvarchar(max)", nullable: false),
+            //        LEAVE_TYPE_ID = table.Column<int>(type: "int", nullable: false),
+            //        CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
+            //        UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_LEAV_SCHEME_TYPE", x => x.TYPE_ID);
+            //        table.ForeignKey(
+            //            name: "FK_LEAV_SCHEME_TYPE_LEAV_SCHEME_SCHEME_ID",
+            //            column: x => x.SCHEME_ID,
+            //            principalTable: "LEAV_SCHEME",
+            //            principalColumn: "SCHEME_ID",
+            //            onDelete: ReferentialAction.Cascade);
+            //        table.ForeignKey(
+            //            name: "FK_LEAV_SCHEME_TYPE_LEAV_TYPE_LEAVE_TYPE_ID",
+            //            column: x => x.LEAVE_TYPE_ID,
+            //            principalTable: "LEAV_TYPE",
+            //            principalColumn: "LEAV_TYPE_ID",
+            //            onDelete: ReferentialAction.Restrict);
+            //    });
 
-            migrationBuilder.CreateTable(
-                name: "LEAV_SCHEME_TYPE_DETL",
-                columns: table => new
-                {
-                    DETL_ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TYPE_ID = table.Column<int>(type: "int", nullable: false),
-                    SCHEME_ID = table.Column<int>(type: "int", nullable: false),
-                    SCHEME_NAME = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FROM_YEAR = table.Column<int>(type: "int", nullable: false),
-                    TO_YEAR = table.Column<int>(type: "int", nullable: false),
-                    DAYS_PER_YEAR = table.Column<int>(type: "int", nullable: false),
-                    CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LEAV_SCHEME_TYPE_DETL", x => x.DETL_ID);
-                    table.ForeignKey(
-                        name: "FK_LEAV_SCHEME_TYPE_DETL_LEAV_SCHEME_TYPE_TYPE_ID",
-                        column: x => x.TYPE_ID,
-                        principalTable: "LEAV_SCHEME_TYPE",
-                        principalColumn: "TYPE_ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "LEAV_SCHEME_TYPE_DETL",
+            //    columns: table => new
+            //    {
+            //        DETL_ID = table.Column<int>(type: "int", nullable: false)
+            //            .Annotation("SqlServer:Identity", "1, 1"),
+            //        TYPE_ID = table.Column<int>(type: "int", nullable: false),
+            //        SCHEME_ID = table.Column<int>(type: "int", nullable: false),
+            //        SCHEME_NAME = table.Column<string>(type: "nvarchar(max)", nullable: false),
+            //        FROM_YEAR = table.Column<int>(type: "int", nullable: false),
+            //        TO_YEAR = table.Column<int>(type: "int", nullable: false),
+            //        DAYS_PER_YEAR = table.Column<int>(type: "int", nullable: false),
+            //        CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false),
+            //        UPDATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_LEAV_SCHEME_TYPE_DETL", x => x.DETL_ID);
+            //        table.ForeignKey(
+            //            name: "FK_LEAV_SCHEME_TYPE_DETL_LEAV_SCHEME_TYPE_TYPE_ID",
+            //            column: x => x.TYPE_ID,
+            //            principalTable: "LEAV_SCHEME_TYPE",
+            //            principalColumn: "TYPE_ID",
+            //            onDelete: ReferentialAction.Cascade);
+            //    });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

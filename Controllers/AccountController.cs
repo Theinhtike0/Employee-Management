@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using HR_Products.Models;
 using System.Diagnostics.Eventing.Reader;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.EntityFrameworkCore;
+using HR_Products.Data;
 
 namespace HR_Products.Controllers
 {
@@ -11,11 +13,16 @@ namespace HR_Products.Controllers
     {
         private readonly SignInManager<Users> signInManager;
         private readonly UserManager<Users> userManager;
+        private readonly AppDbContext _context;
 
-        public AccountController(SignInManager<Users> signInManager, UserManager<Users> userManager)
+        public AccountController(
+            SignInManager<Users> signInManager,
+            UserManager<Users> userManager,
+            AppDbContext context)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this._context = context;
         }
 
         public IActionResult Login()
@@ -42,6 +49,7 @@ namespace HR_Products.Controllers
                     ModelState.AddModelError("Password", "Incorrect password.");
                     return View(model);
                 }
+
                 var result = await signInManager.PasswordSignInAsync(
                     user.UserName,
                     model.Password,
@@ -50,17 +58,28 @@ namespace HR_Products.Controllers
 
                 if (result.Succeeded)
                 {
-                    // Check if the user is an Admin
-                    if (await userManager.IsInRoleAsync(user, "Admin"))
+                    var employee = await _context.EMPE_PROFILE
+                        .FirstOrDefaultAsync(e => e.Email.ToLower() == user.Email.ToLower());
+
+                    if (employee != null)
                     {
-                        return RedirectToAction("Dashboard", "Admin");
+                        switch (employee.JobTitle)
+                        {
+                            case "HR-Admin":
+                                return RedirectToAction("Dashboard", "Admin");
+                            case "Finance-Admin":
+                                return RedirectToAction("Index", "FinanceDashboard");
+                            case "Admin":
+                                return RedirectToAction("Dashboard", "Admin");
+                            default:
+                                return RedirectToAction("Index", "UserDashboard");
+                        }
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        ModelState.AddModelError(string.Empty, "Employee doesn't exist");
                     }
                 }
-                ModelState.AddModelError("", "Login failed. Contact support if the issue persists.");
             }
             return View(model);
         }
@@ -99,14 +118,28 @@ namespace HR_Products.Controllers
 
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(user, "User");
-                    if (model.Email.ToLower() == "admin@gmail.com" || model.Email.ToLower() == "superadmin@gmail.com")
-                    {
-                        await userManager.AddToRoleAsync(user, "Admin");
-                    }
 
-                    await signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    var employee = await _context.EMPE_PROFILE
+                        .FirstOrDefaultAsync(e => e.Email.ToLower() == user.Email.ToLower());
+
+                    if (employee != null)
+                    {
+                        switch (employee.JobTitle)
+                        {
+                            case "HR-Admin":
+                                return RedirectToAction("Index", "HrDashboard");
+                            case "Finance-Admin":
+                                return RedirectToAction("Index", "Home");
+                            case "Admin":
+                                return RedirectToAction("Dashboard", "Admin");
+                            default:
+                                return RedirectToAction("Index", "Home");
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Employee doesn't exist");
+                    }
                 }
 
                 foreach (var error in result.Errors)

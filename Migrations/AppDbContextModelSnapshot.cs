@@ -22,6 +22,99 @@ namespace HR_Products.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("HR_Products.Models.Entities.LeaveRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AccrualBalance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("ApprovedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ApprovedById")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ApproverName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AttachmentContentType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("AttachmentFileData")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("AttachmentFileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AttachmentPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Duration")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("DurationType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmpeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("LeaveBalance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("LeaveTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LeaveTypeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("OriginalAccrualBalance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("OriginalUsedToDate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("UsedToDate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApprovedById");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("LeaveTypeId");
+
+                    b.ToTable("LEAV_REQUESTS");
+                });
+
             modelBuilder.Entity("HR_Products.Models.Entitites.EmployeeProfile", b =>
                 {
                     b.Property<int>("EmpeId")
@@ -118,9 +211,81 @@ namespace HR_Products.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("UserGuid")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("EmpeId");
 
                     b.ToTable("EMPE_PROFILE");
+                });
+
+            modelBuilder.Entity("HR_Products.Models.Entitites.Holiday", b =>
+                {
+                    b.Property<int>("HolidayId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HolidayId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime>("HolidayDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("HolidayName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("HolidayId");
+
+                    b.ToTable("HOLIDAYS");
+                });
+
+            modelBuilder.Entity("HR_Products.Models.Entitites.LeaveBalance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Balance")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("EmpeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EmpeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LeaveTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LeaveTypeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmpeId");
+
+                    b.HasIndex("LeaveTypeId");
+
+                    b.ToTable("LEAV_BALANCE");
                 });
 
             modelBuilder.Entity("HR_Products.Models.Entitites.LeaveType", b =>
@@ -179,7 +344,7 @@ namespace HR_Products.Migrations
 
                     b.HasKey("LEAV_TYPE_ID");
 
-                    b.ToTable("LEAV_TYPE");
+                    b.ToTable("LEAV_TYPE", (string)null);
                 });
 
             modelBuilder.Entity("HR_Products.Models.Entitites.Leavescheme", b =>
@@ -490,6 +655,52 @@ namespace HR_Products.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("HR_Products.Models.Entities.LeaveRequest", b =>
+                {
+                    b.HasOne("HR_Products.Models.Entitites.EmployeeProfile", "Approver")
+                        .WithMany()
+                        .HasForeignKey("ApprovedById")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("FK_LEAV_REQUESTS_EMPE_PROFILE_ApprovedById");
+
+                    b.HasOne("HR_Products.Models.Entitites.EmployeeProfile", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HR_Products.Models.Entitites.LeaveType", "LeaveType")
+                        .WithMany()
+                        .HasForeignKey("LeaveTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Approver");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("LeaveType");
+                });
+
+            modelBuilder.Entity("HR_Products.Models.Entitites.LeaveBalance", b =>
+                {
+                    b.HasOne("HR_Products.Models.Entitites.EmployeeProfile", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmpeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HR_Products.Models.Entitites.LeaveType", "LeaveType")
+                        .WithMany()
+                        .HasForeignKey("LeaveTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("LeaveType");
                 });
 
             modelBuilder.Entity("HR_Products.Models.Entitites.Leaveschemetype", b =>

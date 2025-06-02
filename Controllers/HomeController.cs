@@ -28,7 +28,6 @@ public class HomeController : Controller
 
     public IActionResult Profile()
     {
-        // Logic to display user profile
         return View();
     }
 

@@ -3,22 +3,27 @@ using HR_Products.Models.Entitites;
 using System.Threading.Tasks;
 using HR_Products.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting; 
+using System.IO; 
 
 namespace HR_Products.Controllers
 {
     public class EmployeeController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public EmployeeController(AppDbContext context)
+        public EmployeeController(AppDbContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
-        // GET: Employee/Index
+        
         public async Task<IActionResult> Index()
         {
             var employees = await _context.EMPE_PROFILE.ToListAsync();
+            
             var employeesWithIndex = employees
                 .Select((employee, index) => new { Employee = employee, Index = index + 1 })
                 .ToList();
@@ -26,30 +31,54 @@ namespace HR_Products.Controllers
             return View(employees);
         }
 
-        // GET: Employee/Create
+        
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+           
+            var newEmployeeProfile = new EmployeeProfile();
+            newEmployeeProfile.JoinDate = DateTime.Today; 
+            return View(newEmployeeProfile);
         }
 
-        // POST: Employee/Create
         [HttpPost]
-        public async Task<IActionResult> Create(EmployeeProfile empeprofile)
+        [ValidateAntiForgeryToken]
+        
+        public async Task<IActionResult> Create(EmployeeProfile empeprofile, IFormFile ProfilePicFile)
         {
-            // Check if an employee profile with the same EMPE_ID already exists.
+            
             var existingProfile = await _context.EMPE_PROFILE
                 .FirstOrDefaultAsync(ep => ep.EmpeCode == empeprofile.EmpeCode);
 
             if (existingProfile != null)
             {
                 ModelState.AddModelError("EmpeCode", "An employee profile with this EMPE ID already exists.");
-                return View(empeprofile); // Return the empeprofile to the View to display the error
-            }
-
-            if (!ModelState.IsValid)
-            {
+                
                 return View(empeprofile);
+            }
+            if (ProfilePicFile != null && ProfilePicFile.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images", "profile");
+
+                
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                var fileName = Guid.NewGuid() + Path.GetExtension(ProfilePicFile.FileName); 
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await ProfilePicFile.CopyToAsync(stream); 
+                }
+
+                empeprofile.ProfilePic = fileName; 
+            }
+            else
+            {
+               
             }
 
             empeprofile.CreatedAt = DateTime.Now;
@@ -61,7 +90,6 @@ namespace HR_Products.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Employee/Edit/{id}
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -74,15 +102,11 @@ namespace HR_Products.Controllers
             return View(employee);
         }
 
-        // POST: Employee/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, EmployeeProfile employeeProfile)
+        public async Task<IActionResult> Edit(int id, EmployeeProfile employeeProfile, IFormFile ProfilePicFile)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(employeeProfile);
-            }
+           
 
             var existingEmployee = await _context.EMPE_PROFILE.FindAsync(id);
             if (existingEmployee == null)
@@ -107,15 +131,58 @@ namespace HR_Products.Controllers
             existingEmployee.State = employeeProfile.State;
             existingEmployee.PostalCode = employeeProfile.PostalCode;
             existingEmployee.Country = employeeProfile.Country;
-            existingEmployee.ProfilePic = employeeProfile.ProfilePic;
             existingEmployee.UpdatedAt = DateTime.Now;
 
-            await _context.SaveChangesAsync();
+            if (ProfilePicFile != null && ProfilePicFile.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images", "profile");
 
-            return RedirectToAction("Index");
+                Directory.CreateDirectory(uploadsFolder);
+
+                if (!string.IsNullOrEmpty(existingEmployee.ProfilePic))
+                {
+                    var oldFilePath = Path.Combine(uploadsFolder, existingEmployee.ProfilePic);
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                }
+
+                var fileName = Guid.NewGuid() + Path.GetExtension(ProfilePicFile.FileName);
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await ProfilePicFile.CopyToAsync(stream);
+                }
+
+                existingEmployee.ProfilePic = fileName;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EmployeeProfileExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
 
-        // GET: Employee/Delete/{id}
+        private bool EmployeeProfileExists(int id)
+        {
+            return _context.EMPE_PROFILE.Any(e => e.EmpeId == id);
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -125,23 +192,73 @@ namespace HR_Products.Controllers
                 return NotFound();
             }
 
+            
+            if (!string.IsNullOrEmpty(employee.ProfilePic))
+            {
+                var imagePath = Path.Combine(_hostingEnvironment.WebRootPath, "images", "profile", employee.ProfilePic);
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+
             _context.EMPE_PROFILE.Remove(employee);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
 
-        // GET: Employee/Details/{id}
-        [HttpGet]
-        public async Task<IActionResult> Details(int id)
+
+        public async Task<IActionResult> Detail(int? id)
         {
-            var employee = await _context.EMPE_PROFILE.FindAsync(id);
-            if (employee == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            var employeeProfile = await _context.EMPE_PROFILE
+                .FirstOrDefaultAsync(m => m.EmpeId == id);
+
+            if (employeeProfile == null)
+            {
+                return NotFound();
+            }
+
+            return View(employeeProfile);
+        }
+
+        public async Task<IActionResult> Profile()
+        {
+            var currentUser = GetCurrentUser();
+            if (currentUser == null)
+            {
+                return NotFound("Employee not found.");
+            }
+
+            return RedirectToAction("Detail", new { id = currentUser.EmpeId });
+        }
+
+
+        private EmployeeProfile GetCurrentUser()
+        {
+            var userEmail = HttpContext.User.Identity?.Name;
+
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return null;
+            }
+
+            var employees = _context.EMPE_PROFILE.Where(e => e.Email != null).ToList();
+            var employee = employees.FirstOrDefault(e =>
+                e.Email.Equals(userEmail, StringComparison.OrdinalIgnoreCase));
+
+            if (employee == null)
+            {
+                System.Diagnostics.Debug.WriteLine($"No employee found for email: {userEmail}");
+                throw new InvalidOperationException($"Employee not found for email: {userEmail}");
+            }
+
+            return employee;
         }
     }
 }

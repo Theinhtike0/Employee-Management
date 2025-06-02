@@ -11,7 +11,7 @@
 <body>
     <div class="dashboard-container">
         <aside class="sidebar">
-            <h4 class="sidebar-header">Leave Application</h4>
+            <h4 class="sidebar-header">Staff Management</h4>
             <div class="menu-section">
                 <button class="menu-toggle">
                     Employee Profile
@@ -25,13 +25,16 @@
             </div>
             <div class="menu-section">
                 <button class="menu-toggle">
-                    Leave Master
+                    Leave Application
                     <i class="fas fa-chevron-down toggle-icon"></i>
                 </button>
                 <ul class="submenu">
                     <li><a asp-controller="LeaveType" asp-action="Index"><i class="fas fa-list me-1"></i>Leave Type</a></li>
-                    <li><a asp-controller="LeaveScheme" asp-action="Index"><i class="fas fa-chart-bar me-1"></i>Leave Scheme</a></li>
-                    <li><a href="#"><i class="fas fa-history me-1"></i>Leave History</a></li>
+                    <li><a asp-controller="LeaveBalance" asp-action="Index"><i class="fas fa-chart-bar me-1"></i>Leave Balance</a></li>
+                    <li><a asp-controller="Holiday" asp-action="Index"><i class="fas fa-list me-1"></i>Manage Holidays</a></li>
+                    <li><a asp-controller="LeaveRequests" asp-action="Create"><i class="fas fa-list me-1"></i>Leave Request</a></li>
+                    <li><a asp-controller="LeaveApproval" asp-action="Index"><i class="fas fa-list me-1"></i>Approval Form</a></li>
+                    <li><a asp-controller="LeaveRequests" asp-action="History"><i class="fas fa-list me-1"></i>Leave Histroy</a></li>
                 </ul>
             </div>
             

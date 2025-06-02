@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using HR_Products.Models.Entitites;
 using HR_Products.Models;
+using HR_Products.Models.Entities;
 
 namespace HR_Products.Data
 {
@@ -18,6 +19,11 @@ namespace HR_Products.Data
         public DbSet<Leavescheme> LEAV_SCHEME { get; set; }
         public DbSet<Leaveschemetype> LEAV_SCHEME_TYPE { get; set; }
         public DbSet<Leaveschemetypedetl> LEAV_SCHEME_TYPE_DETL { get; set; }
+        public DbSet<LeaveBalance> LEAV_BALANCE { get; set; }
+        public DbSet<Holiday> HOLIDAYS { get; set; }
+        public DbSet<LeaveRequest> LEAV_REQUESTS { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -67,6 +73,77 @@ namespace HR_Products.Data
                 .WithMany(t => t.LEAV_SCHEME_TYPE_DETL)
                 .HasForeignKey(d => d.TYPE_ID)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<LeaveBalance>()
+    .HasKey(lb => lb.Id);
+
+            modelBuilder.Entity<LeaveBalance>()
+                .HasOne(lb => lb.Employee)
+                .WithMany()
+                .HasForeignKey(lb => lb.EmpeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<LeaveBalance>()
+                .HasOne(lb => lb.LeaveType)
+                .WithMany()
+                .HasForeignKey(lb => lb.LeaveTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<LeaveBalance>()
+            .Property(lb => lb.CreatedDate)
+            .HasDefaultValueSql("GETDATE()");
+                
+            modelBuilder.Entity<LeaveType>()
+                .ToTable("LEAV_TYPE");
+
+            modelBuilder.Entity<LeaveRequest>()
+                .HasOne(lr => lr.Employee)
+                .WithMany()
+                .HasForeignKey(lr => lr.EmployeeId);
+
+            modelBuilder.Entity<LeaveRequest>()
+                .HasOne(lr => lr.LeaveType)
+                .WithMany()
+                .HasForeignKey(lr => lr.LeaveTypeId);
+
+            modelBuilder.Entity<LeaveRequest>()
+                .HasOne(lr => lr.Approver)
+                .WithMany()
+                .HasForeignKey(lr => lr.ApprovedById);
+
+            modelBuilder.Entity<LeaveRequest>(entity =>
+            {
+                entity.Property(lr => lr.Duration)
+                    .HasColumnType("decimal(18,2)");
+
+                entity.Property(lr => lr.LeaveBalance)
+                    .HasColumnType("decimal(18,2)");
+
+                entity.Property(lr => lr.UsedToDate)
+                    .HasColumnType("decimal(18,2)");
+
+                entity.Property(lr => lr.AccrualBalance)
+                    .HasColumnType("decimal(18,2)");
+            });
+
+
+            modelBuilder.Entity<LeaveRequest>(entity =>
+            {
+                // Other configurations...
+
+                entity.HasOne(lr => lr.Approver)
+                      .WithMany()
+                      .HasForeignKey(lr => lr.ApprovedById)
+                      .OnDelete(DeleteBehavior.NoAction)
+                      .IsRequired(false)  // This makes the relationship optional
+                      .HasConstraintName("FK_LEAV_REQUESTS_EMPE_PROFILE_ApprovedById");
+            });
+
+            modelBuilder.Entity<EmployeeProfile>()
+             .Property(e => e.UserGuid)
+             .HasDefaultValueSql("NEWID()");
+
+
         }
 
     }

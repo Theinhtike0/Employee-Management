@@ -1,0 +1,101 @@
+﻿@model HR_Products.Models.Entitites.EmployeeProfile
+@{
+    ViewData["Title"] = "Employee Details";
+    var defaultProfilePicUrl = Url.Content("~/images/profile/default_profile.png"); 
+}
+
+<div class="row">
+    
+    <div class="col-md-4">
+            <div class="card-body text-center">
+                <div id="profilePicContainer" style="height: 200px; width: 200px; border: 2px solid #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; overflow: hidden;">
+                    @if (!string.IsNullOrEmpty(Model.ProfilePic))
+                    {
+                        <img id="profileImage" src="@Url.Content("~/images/profile/" + Model.ProfilePic)"
+                             alt="Profile Picture"
+                             style="width: 100%; height: 100%; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <img id="profileImage" src="@defaultProfilePicUrl"
+                             alt="Default Profile Picture"
+                             style="width: 100%; height: 100%; object-fit: cover;" />
+                    }
+                </div>
+                <div class="mt-3 text-muted">
+                    @if (string.IsNullOrEmpty(Model.ProfilePic))
+                    {
+                        <span>No image uploaded</span>
+                    }
+                </div>
+            </div>
+    </div>
+
+    
+    <div class="col-md-8 rounded border p-3">
+        <h2 class="text-center mb-5">Employee Details</h2>
+
+        <dl class="row">
+            <dt class="col-sm-4">Employee Code</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.EmpeCode)</dd>
+
+            <dt class="col-sm-4">Name</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.EmpeName)</dd>
+
+            <dt class="col-sm-4">Date of Birth</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.DateOfBirth)</dd>
+
+            <dt class="col-sm-4">Gender</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Gender)</dd>
+
+            <dt class="col-sm-4">Email</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Email)</dd>
+
+            <dt class="col-sm-4">Phone Number</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.PhoneNo)</dd>
+
+            <dt class="col-sm-4">Emergency Contact Name</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.EmgcConctName)</dd>
+
+            <dt class="col-sm-4">Emergency Contact Phone</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.EmgcConctPhone)</dd>
+
+            <dt class="col-sm-4">Role</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.JobTitle)</dd>
+
+            <dt class="col-sm-4">Department</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.DeptId)</dd>
+
+            <dt class="col-sm-4">Join Date</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.JoinDate)</dd>
+
+            <dt class="col-sm-4">Status</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Status)</dd>
+
+            <dt class="col-sm-4">Last Date</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.TerminateDate)</dd>
+
+            <dt class="col-sm-4">City</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.City)</dd>
+
+            <dt class="col-sm-4">State</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.State)</dd>
+
+            <dt class="col-sm-4">Postal Code</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.PostalCode)</dd>
+
+            <dt class="col-sm-4">Country</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Country)</dd>
+
+            <dt class="col-sm-4">CreatedAt</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.CreatedAt)</dd>
+
+            <dt class="col-sm-4">UpdatedAt</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.UpdatedAt)</dd>
+        </dl>
+
+        <div class="mt-4">
+            <a class="btn btn-outline-warning btn-md" style="width: 100px;" href="javascript:history.back()" role="button">Back</a>
+        </div>
+    </div>
+</div>

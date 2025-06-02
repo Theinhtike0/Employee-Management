@@ -15,7 +15,6 @@ namespace HR_Products.Controllers
             _context = context;
         }
 
-        // GET: Employee/Index
         public async Task<IActionResult> Index()
         {
             var leavetype = await _context.LEAV_TYPE.ToListAsync();
@@ -26,25 +25,22 @@ namespace HR_Products.Controllers
             return View(leavetype);
         }
 
-        // GET: Employee/Create
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Employee/Create
         [HttpPost]
         public async Task<IActionResult> Create(LeaveType leavetype)
         {
-            // Check if a leave type with the same name already exists.
             var existingLeaveType = await _context.LEAV_TYPE
                 .FirstOrDefaultAsync(lt => lt.LEAV_TYPE_NAME == leavetype.LEAV_TYPE_NAME);
 
             if (existingLeaveType != null)
         {
           ModelState.AddModelError("LEAV_TYPE_NAME", "A leave type with this name already exists.");
-          return View(leavetype); // This should trigger the display of errors
+          return View(leavetype); 
         }
 
         if (!ModelState.IsValid)
@@ -61,7 +57,6 @@ namespace HR_Products.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Employee/Edit/{id}
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -74,7 +69,6 @@ namespace HR_Products.Controllers
             return View(leavetype);
         }
 
-        // POST: Employee/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, LeaveType leavetype)
@@ -90,7 +84,6 @@ namespace HR_Products.Controllers
                 return NotFound();
             }
 
-            // Update only the non-key fields
             leaveType.LEAV_TYPE_NAME = leavetype.LEAV_TYPE_NAME;
             leaveType.DESCRIPTION = leavetype.DESCRIPTION;
             leaveType.IS_PAID = leavetype.IS_PAID;
@@ -108,23 +101,43 @@ namespace HR_Products.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Employee/Delete/{id}
-        [HttpGet]
+        [HttpGet] 
         public async Task<IActionResult> Delete(int id)
         {
             var leavetype = await _context.LEAV_TYPE.FindAsync(id);
             if (leavetype == null)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Leave Type not found."; 
+                return RedirectToAction("Index");
             }
 
-            _context.LEAV_TYPE.Remove(leavetype);
-            await _context.SaveChangesAsync();
+            bool isReferenced = await _context.LEAV_REQUESTS.AnyAsync(lr => lr.LeaveTypeId == leavetype.LEAV_TYPE_ID);
+
+            if (isReferenced)
+            {
+                TempData["ErrorMessage"] = $"Cannot delete '{leavetype.LEAV_TYPE_NAME}'. There are existing leave requests associated with this leave type.";
+                return RedirectToAction("Index"); 
+            }
+
+            try
+            {
+                _context.LEAV_TYPE.Remove(leavetype);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Leave Type '{leavetype.LEAV_TYPE_NAME}' deleted successfully.";
+            }
+            catch (DbUpdateException ex)
+            {
+                TempData["ErrorMessage"] = $"An error occurred while deleting the leave type: {ex.Message}";
+                
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An unexpected error occurred: {ex.Message}";
+            }
 
             return RedirectToAction("Index");
         }
 
-        // GET: Employee/Details/{id}
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {

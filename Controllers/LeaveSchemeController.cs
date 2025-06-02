@@ -84,7 +84,6 @@ namespace HR_Products.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Employee/Delete/{id}
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -122,7 +121,6 @@ namespace HR_Products.Controllers
             return View(viewModel);
         }
 
-        // Add LEAV_SCHEME_TYPE
         [HttpPost]
         public async Task<IActionResult> AddSchemeType(Leaveschemetype schemetype)
         {
@@ -320,7 +318,6 @@ namespace HR_Products.Controllers
                 return View(viewModel);
             }
 
-            // Check for existing duplicate record
             var existingDetail = await _context.LEAV_SCHEME_TYPE_DETL.FirstOrDefaultAsync(
                 d => d.SCHEME_ID == viewModel.SCHEME_ID &&
                      d.TYPE_ID == leaveType.TYPE_ID &&
@@ -363,7 +360,6 @@ namespace HR_Products.Controllers
                 return NotFound();
             }
 
-            // Assuming LEAV_SCHEME_TYPE has a SCHEME_ID property
             int schemeId = leaveTypeToDelete.SCHEME_ID;
 
             _context.LEAV_SCHEME_TYPE.Remove(leaveTypeToDelete);
@@ -382,7 +378,7 @@ namespace HR_Products.Controllers
                 return NotFound();
             }
 
-            int schemeId = detailToDelete.SCHEME_ID; // Get the SCHEME_ID
+            int schemeId = detailToDelete.SCHEME_ID; 
 
             _context.LEAV_SCHEME_TYPE_DETL.Remove(detailToDelete);
             await _context.SaveChangesAsync();

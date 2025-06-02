@@ -10,7 +10,7 @@ namespace HR_Products.ViewModels
     {
         public Leavescheme LeaveScheme { get; set; }
         public Leaveschemetype LeaveSchemeType { get; set; }
-        public IEnumerable<SelectListItem> LeaveTypes { get; set; } // You likely won't need this dropdown anymore
+        public IEnumerable<SelectListItem> LeaveTypes { get; set; } 
 
         [Required(ErrorMessage = "From Year is required")]
         public int FROM_YEAR { get; set; }
@@ -23,7 +23,7 @@ namespace HR_Products.ViewModels
 
         public DateTime UPDATED_AT { get; set; }
 
-        public int TYPE_ID { get; set; } // You might need to handle this differently if it's auto-filled
+        public int TYPE_ID { get; set; } 
         public int SCHEME_ID { get; set; }
     }
 }

@@ -1,0 +1,92 @@
+﻿@model List<HR_Products.ViewModels.LeaveBalanceViewModel>
+@{
+    ViewData["Title"] = "Leave Balance";
+    bool isRegularUser = ViewBag.IsRegularUser ?? false;
+    var currentUser = ViewBag.CurrentUser;
+    int selectedEmpeId = ViewBag.SelectedEmpeId ?? 0;
+    int selectedLeaveTypeId = ViewBag.SelectedLeaveTypeId ?? 0;
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Leave Balance</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Calculate" method="post" class="row g-3">
+                <div class="col-md-4">
+                    @if (isRegularUser)
+                    {
+                        <label class="form-label">Employee Name</label>
+                        <input type="text" class="form-control" value="@currentUser.EmpeName" readonly />
+                        <input type="hidden" name="empeId" value="@currentUser.EmpeId" />
+                    }
+                    else
+                    {
+                        <label for="EmpeId" class="form-label">Employee Name</label>
+                        <select class="form-select" id="EmpeId" name="empeId">
+                            <option value="0" selected="@(selectedEmpeId == 0)">All Employees</option>
+                            @foreach (var emp in ViewBag.Employees)
+                            {
+                                <option value="@emp.Value" selected="@(selectedEmpeId.ToString() == emp.Value)">@emp.Text</option>
+                            }
+                        </select>
+                    }
+                </div>
+                <div class="col-md-4">
+                    <label for="LeaveTypeId" class="form-label">Leave Type</label>
+                    <select class="form-select" id="LeaveTypeId" name="leaveTypeId">
+                        <option value="0" selected="@(selectedLeaveTypeId == 0)">All Leave Types</option>
+                        @foreach (var type in ViewBag.LeaveTypes)
+                        {
+                            <option value="@type.Value" selected="@(selectedLeaveTypeId.ToString() == type.Value)">@type.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary">Calculate</button>&nbsp; &nbsp;
+                    <a class="btn btn-outline-warning btn-md" style="width: 100px;" href="javascript:history.back()" role="button">Back</a>
+                </div>
+            </form>
+
+            @if (Model != null && Model.Any())
+            {
+                <table class="table table-bordered table-striped mt-3">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Employee Name</th>
+                            <th>Age</th>
+                            <th>Leave Type</th>
+                            <th>Service Years</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var employee in Model)
+                        {
+                            @if (employee.LeaveBalances != null && employee.LeaveBalances.Any())
+                            {
+                                @foreach (var balance in employee.LeaveBalances)
+                                {
+                                    <tr>
+                                        <td>@employee.EmpeName</td>
+                                        <td>@employee.Age</td>
+                                        <td>@balance.LeaveType</td>
+                                        <td>@employee.ServiceYear</td>
+                                        <td>@balance.Balance</td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+            else if (Context.Request.Method == "POST")
+            {
+                <div class="alert alert-info mt-3">
+                    No leave balance records found matching your criteria.
+                </div>
+            }
+        </div>
+    </div>
+</div>

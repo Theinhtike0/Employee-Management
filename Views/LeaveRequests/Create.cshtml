@@ -1,0 +1,252 @@
+﻿@model HR_Products.ViewModels.LeaveRequestViewModel
+
+<h3>Send Leave Request</h3>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.AttachmentPath))
+{
+    <a href="@Model.AttachmentPath" target="_blank">
+        Download Attachment (@Model.AttachmentFileName)
+    </a>
+}
+
+<form asp-action="Create" id="leaveRequestForm" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    @if (ViewBag.IsAdmin)
+    {
+        <div class="form-group">
+            <label asp-for="EmployeeId" class="control-label">Employee</label>
+            <select asp-for="EmployeeId" class="form-control" asp-items="@(new SelectList(ViewBag.Employees, "EmpeId", "EmpeName"))">
+                <option value="">Select Employee</option>
+            </select>
+            <span asp-validation-for="EmployeeId" class="text-danger"></span>
+        </div>
+    }
+    else
+    {
+        <div class="form-group">
+            <label class="control-label">Employee</label>
+            <input class="form-control" value="@Model.EmpeName" readonly />
+            <input type="hidden" asp-for="EmployeeId" />
+        </div>
+    }
+
+    <div class="form-group">
+        <label asp-for="LeaveTypeId" class="control-label"></label>
+        <select asp-for="LeaveTypeId" class="form-control" id="leaveTypeSelect">
+            <option value="">Select Leave Type</option>
+            @foreach (var item in ViewBag.LeaveTypes)
+            {
+                <option value="@item.LEAV_TYPE_ID" title="@item.DESCRIPTION">@item.LEAV_TYPE_NAME - @item.DESCRIPTION</option>
+            }
+        </select>
+        <span asp-validation-for="LeaveTypeId" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" class="form-control" type="date" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" class="form-control" type="date" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="DurationType" class="control-label"></label>
+                <select asp-for="DurationType" class="form-control">
+                    @foreach (var type in ViewBag.DurationTypes)
+                    {
+                        <option value="@type">@type</option>
+                    }
+                </select>
+                <span asp-validation-for="DurationType" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Amount</label>
+        <input asp-for="Duration" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Balance</label>
+        <input asp-for="LeaveBalance" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">UsedToDate</label>
+        <input asp-for="UsedToDate" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">AccrualBalance</label>
+        <input asp-for="AccrualBalance" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Approver</label>
+        <input asp-for="ApproverName" class="form-control" readonly />
+        <input type="hidden" asp-for="ApprovedById" id="approvedById" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Reason" class="control-label"></label>
+        <textarea asp-for="Reason" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Reason" class="text-danger"></span>
+    </div>
+
+    <div class="form-group" id="attachmentGroup" style="display: none;">
+        <label asp-for="AttachmentFile" class="control-label"></label>
+        <input asp-for="AttachmentFile" type="file" class="form-control" />
+        <span asp-validation-for="AttachmentFile" class="text-danger"></span>
+        <small class="form-text text-muted">Maximum file size: 5MB (required for HL/SL leave types)</small>
+    </div>
+    <br />
+    <div class="form-group">
+        <input type="submit" value="Submit" class="btn btn-primary" />
+        <a class="btn btn-outline-warning btn-md" style="width: 100px;" href="javascript:history.back()" role="button">Back</a>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            function toggleAttachmentField() {
+                var leaveType = $('#leaveTypeSelect option:selected').text();
+                if (leaveType.includes('HL') || leaveType.includes('SL')) {
+                    $('#attachmentGroup').show();
+                    $('#AttachmentFile').attr('required', 'required');
+                } else {
+                    $('#attachmentGroup').hide();
+                    $('#AttachmentFile').removeAttr('required');
+                }
+            }
+
+            $('#leaveTypeSelect').change(function() {
+                updateBalanceInfo();
+                toggleAttachmentField();
+            });
+
+            toggleAttachmentField();
+
+            if ($('#EmployeeId').length) {
+                $('#EmployeeId').change(updateBalanceInfo);
+            } else {
+                updateBalanceInfo();
+            }
+
+            function calculateDuration() {
+                var start = new Date($('#StartDate').val());
+                var end = new Date($('#EndDate').val());
+                var durationType = $('#DurationType').val();
+
+                if (start && end && start <= end) {
+                    var days = (end - start) / (1000 * 60 * 60 * 24) + 1;
+                    var duration = durationType === 'Full-Day' ? days : days * 0.5;
+                    $('#Duration').val(duration.toFixed(1));
+                }
+            }
+
+            $('input[type="date"], #DurationType').change(calculateDuration);
+
+            function updateBalanceInfo() {
+                var employeeId = $('#EmployeeId').val();
+                var leaveTypeId = $('#leaveTypeSelect').val();
+
+                if (employeeId && leaveTypeId) {
+                    $.getJSON('/LeaveRequests/GetApprover', {
+                        leaveTypeId: leaveTypeId,
+                        employeeId: employeeId
+                    }, function (data) {
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
+
+                        $('#ApproverName').val(data.approverName);
+                        $('#approvedById').val(data.approverId);
+                        $('#LeaveBalance').val(data.balance);
+                        $('#UsedToDate').val(data.usedToDate);
+                        $('#AccrualBalance').val(data.accrualBalance);
+
+                        if (!data.isAutoApproved && data.approverId === 0) {
+                            alert('Warning: No approver was automatically assigned for this leave type');
+                        }
+                    }).fail(function() {
+                        alert('Error getting approver information');
+                    });
+                }
+            }
+
+            $('#leaveRequestForm').submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            var successMsg = response.message;
+                            if (response.status) {
+                                successMsg += '\nStatus: ' + response.status;
+                            }
+
+                            if (response.redirectUrl) {
+                                alert(successMsg);
+                                window.location.href = response.redirectUrl;
+                            } else {
+                                form[0].submit();
+                            }
+                        } else {
+                            $('.text-danger').empty();
+
+                            if (response.message) {
+                                alert(response.message);
+                            } else if (response.errors) {
+                                var errorMessages = [];
+                                $.each(response.errors, function(key, value) {
+                                    errorMessages.push(value);
+                                });
+                                alert(errorMessages.join('\n'));
+                            } else {
+                                alert('An error occurred while submitting the form.');
+                            }
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('An error occurred: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                $(document).ready(function() {
+                    alert('@Html.Raw(TempData["SuccessMessage"])');
+                });
+            </text>
+        }
+    </script>
+}

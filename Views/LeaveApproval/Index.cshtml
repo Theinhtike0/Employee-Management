@@ -1,0 +1,105 @@
+﻿@using HR_Products.ViewModels
+@model IEnumerable<LeaveApprovalViewModel>
+
+@{
+    ViewData["Title"] = "Approval Form";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3>@ViewData["Title"]</h3>
+    </div>
+    <div class="card-body">
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info">No pending leave requests</div>
+        }
+        else
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Leave Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Amount</th>
+                        <th>Reason</th>
+                        <th>Attach File</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.EmployeeName</td>
+                            <td>@item.LeaveTypeName</td>
+                            <td>@item.StartDate.ToString("d")</td>
+                            <td>@item.EndDate.ToString("d")</td>
+                            <td>@item.Duration</td>
+                            <td>@item.Reason</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.AttachmentPath))
+                                {
+                                    var isImageAttachment = item.AttachmentContentType != null &&
+                                    (item.AttachmentContentType.StartsWith("image/jpeg") ||
+                                    item.AttachmentContentType.StartsWith("image/png") ||
+                                    item.AttachmentContentType.StartsWith("image/gif") ||
+                                    item.AttachmentContentType.StartsWith("image/bmp"));
+
+                                    if (isImageAttachment)
+                                    {
+                                        <div style="display: flex; align-items: center;">
+                                            <a href="@Url.Content(item.AttachmentPath)" target="_blank" title="View @item.AttachmentFileName">
+                                                <img src="@Url.Content(item.AttachmentPath)"
+                                                     alt="Leave Attachment: @item.AttachmentFileName"
+                                                     style="width: 50px; height: 50px; object-fit: cover; border: 1px solid #ddd;" />
+                                            </a>
+                                            <a href="@Url.Action("DownloadAttachment", new { id = item.Id })" title="Download @item.AttachmentFileName">
+                                                <i class="fas fa-arrow-down" style="margin-left: 5px; color: #007bff;"></i>
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Content(item.AttachmentPath)" target="_blank" title="Download @item.AttachmentFileName">
+                                            <i class="fas fa-file-alt"></i> Download
+                                        </a>
+                                    }
+                                }
+                                else
+                                {
+                                    <span>No Attachment</span>
+                                }
+                            </td>
+                            
+                            <td>
+                                <form asp-action="Approve" method="post" style="display: inline">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button type="submit" class="btn btn-success">Approve</button>
+                                </form>
+                                <form asp-action="Reject" method="post" style="display: inline">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button type="submit" class="btn btn-danger">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<div class="mt-5 d-flex justify-content-start">
+    <a class="btn btn-outline-warning btn-md" style="width: 100px;" href="javascript:history.back()" role="button">Back</a>
+</div>

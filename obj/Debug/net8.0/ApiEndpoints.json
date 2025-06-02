@@ -1,1 +1,58 @@
-[]
+[
+  {
+    "ContainingType": "HR_Products.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/Auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "HR_Products.ViewModels.LoginViewModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HR_Products.Controllers.DashboardController",
+    "Method": "Admin",
+    "RelativePath": "Dashboard/admin",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HR_Products.Controllers.DashboardController",
+    "Method": "Finance",
+    "RelativePath": "Dashboard/finance",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HR_Products.Controllers.DashboardController",
+    "Method": "HR",
+    "RelativePath": "Dashboard/hr",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HR_Products.Controllers.DashboardController",
+    "Method": "User",
+    "RelativePath": "Dashboard/user",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]

@@ -25,6 +25,58 @@
       "PackagePath": "staticwebassets\\images\\View.jpg"
     },
     {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\images\\profile\\02c07fa9-c46f-4bc2-a8cf-109c2495be85.jpg",
+      "PackagePath": "staticwebassets\\images\\profile\\02c07fa9-c46f-4bc2-a8cf-109c2495be85.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\images\\profile\\0f25d183-e08e-4e26-9a8c-fcc5243377d0.jpg",
+      "PackagePath": "staticwebassets\\images\\profile\\0f25d183-e08e-4e26-9a8c-fcc5243377d0.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\images\\profile\\2196e743-8c4b-4c94-930d-46ace03b3aee.jpg",
+      "PackagePath": "staticwebassets\\images\\profile\\2196e743-8c4b-4c94-930d-46ace03b3aee.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\images\\profile\\5a1d89f7-02e6-4183-b077-61e45a312f79.jpg",
+      "PackagePath": "staticwebassets\\images\\profile\\5a1d89f7-02e6-4183-b077-61e45a312f79.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\images\\profile\\5f8cb8ab-d53d-4213-a81b-844cd77f1c23.jpg",
+      "PackagePath": "staticwebassets\\images\\profile\\5f8cb8ab-d53d-4213-a81b-844cd77f1c23.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\images\\profile\\6bd9715f-b2ca-45a4-a310-b2af3b4e8385.jpg",
+      "PackagePath": "staticwebassets\\images\\profile\\6bd9715f-b2ca-45a4-a310-b2af3b4e8385.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\images\\profile\\a8ae8a00-97b2-45f1-9958-a3456fa09496.jpg",
+      "PackagePath": "staticwebassets\\images\\profile\\a8ae8a00-97b2-45f1-9958-a3456fa09496.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\images\\profile\\bbd3ee02-6c79-45dd-ac38-4e7baed60e1a.jpg",
+      "PackagePath": "staticwebassets\\images\\profile\\bbd3ee02-6c79-45dd-ac38-4e7baed60e1a.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\images\\profile\\bc625781-7eaf-46a6-abed-c3817d43ba96.jpg",
+      "PackagePath": "staticwebassets\\images\\profile\\bc625781-7eaf-46a6-abed-c3817d43ba96.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\images\\profile\\dd09d0eb-a46b-495a-8a5f-873a153a5005.jpg",
+      "PackagePath": "staticwebassets\\images\\profile\\dd09d0eb-a46b-495a-8a5f-873a153a5005.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\images\\profile\\de505c8e-e868-44f6-9f5a-d36dc30da414.jpg",
+      "PackagePath": "staticwebassets\\images\\profile\\de505c8e-e868-44f6-9f5a-d36dc30da414.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\images\\profile\\e4c943dc-047e-4d0a-a510-8609d2015007.jpg",
+      "PackagePath": "staticwebassets\\images\\profile\\e4c943dc-047e-4d0a-a510-8609d2015007.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\images\\profile\\ed2ef903-b72f-4aa4-b9e3-554805e5dddf.jpg",
+      "PackagePath": "staticwebassets\\images\\profile\\ed2ef903-b72f-4aa4-b9e3-554805e5dddf.jpg"
+    },
+    {
       "Id": "E:\\CSharp\\HR_Products\\wwwroot\\js\\script.js",
       "PackagePath": "staticwebassets\\js\\script.js"
     },
@@ -259,6 +311,34 @@
     {
       "Id": "E:\\CSharp\\HR_Products\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\uploads\\leave_attachments\\3dcc64d5-fc7f-4682-8e61-398057fa77ba_pw.png",
+      "PackagePath": "staticwebassets\\uploads\\leave_attachments\\3dcc64d5-fc7f-4682-8e61-398057fa77ba_pw.png"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\uploads\\leave_attachments\\504f911c-23da-4136-ae99-9dacf3c5b269_r2.jpg",
+      "PackagePath": "staticwebassets\\uploads\\leave_attachments\\504f911c-23da-4136-ae99-9dacf3c5b269_r2.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\uploads\\leave_attachments\\5fcdf181-8a85-46b5-902c-15b19f0c0d60_login.png",
+      "PackagePath": "staticwebassets\\uploads\\leave_attachments\\5fcdf181-8a85-46b5-902c-15b19f0c0d60_login.png"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\uploads\\leave_attachments\\8a74feb5-6343-4c34-99ba-f3d6b1cc8235_r5.jpg",
+      "PackagePath": "staticwebassets\\uploads\\leave_attachments\\8a74feb5-6343-4c34-99ba-f3d6b1cc8235_r5.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\uploads\\leave_attachments\\a4e0cced-7fa1-430a-97e6-f912a6d37b37_r5.jpg",
+      "PackagePath": "staticwebassets\\uploads\\leave_attachments\\a4e0cced-7fa1-430a-97e6-f912a6d37b37_r5.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\uploads\\leave_attachments\\b10f0c27-451c-495d-b8e3-9fac03942b27_r1.jpg",
+      "PackagePath": "staticwebassets\\uploads\\leave_attachments\\b10f0c27-451c-495d-b8e3-9fac03942b27_r1.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\uploads\\leave_attachments\\e298c870-bd33-4efc-ac19-1b25cbe44a66_r5.jpg",
+      "PackagePath": "staticwebassets\\uploads\\leave_attachments\\e298c870-bd33-4efc-ac19-1b25cbe44a66_r5.jpg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.HR_Products.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",

@@ -11,41 +11,36 @@ namespace HR_Products.Data.Seeder
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<Users>>();
 
-            if (!await roleManager.RoleExistsAsync("Admin"))
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
+            // Define all roles you want in the system
+            string[] roles = { "Admin", "HR-Admin", "Finance-Admin", "User" };
 
-            if (!await roleManager.RoleExistsAsync("User"))
-                await roleManager.CreateAsync(new IdentityRole("User"));
-
-            // Seed First Admin User
-            var adminUser1 = await userManager.FindByEmailAsync("admin@gmail.com");
-            if (adminUser1 == null)
+            foreach (var roleName in roles)
             {
-                var user1 = new Users
+                if (!await roleManager.RoleExistsAsync(roleName))
                 {
-                    UserName = "admin@example.com",
-                    Email = "admin@example.com"
-                };
-                var result1 = await userManager.CreateAsync(user1, "Admin@123");
-                if (result1.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(user1, "Admin");
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
 
-            // Seed Second Admin User
-            var adminUser2 = await userManager.FindByEmailAsync("superadmin@gmail.com");
-            if (adminUser2 == null)
+            // Create default Admin user if not exists
+            var adminEmail = "admin@example.com";
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+            if (adminUser == null)
             {
-                var user2 = new Users
+                adminUser = new Users
                 {
-                    UserName = "superadmin@example.com",
-                    Email = "superadmin@example.com"
+                    UserName = adminEmail,
+                    Email = adminEmail,
+                    FullName = "System Admin",
+                    EmailConfirmed = true
                 };
-                var result2 = await userManager.CreateAsync(user2, "SuperAdmin@123");
-                if (result2.Succeeded)
+
+                var result = await userManager.CreateAsync(adminUser, "Admin@123");
+
+                if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(user2, "Admin");
+                    await userManager.AddToRoleAsync(adminUser, "Admin");
                 }
             }
         }

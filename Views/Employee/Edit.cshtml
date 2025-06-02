@@ -1,14 +1,44 @@
 ﻿@model HR_Products.Models.Entitites.EmployeeProfile
+@{
+    ViewData["Title"] = "Edit Employee";
+    var defaultProfilePicUrl = Url.Content("~/images/profile/default_profile.png"); 
+}
 
-<div class="row">
-    <div class="col-md-8 mx-auto rounded border p-3">
-        <h2 class="text-center mb-5">Edit Employee</h2>
+<form method="post" asp-action="Edit" asp-controller="Employee" enctype="multipart/form-data">
+    <div class="row">
+        
+        <div class="col-md-4">
+                <div class="card-body text-center">
+                    <div id="profilePicContainer" style="height: 200px; width: 200px; border: 2px dashed #dc3545; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; overflow: hidden;">
+                        @if (!string.IsNullOrEmpty(Model.ProfilePic))
+                        {
+                            <img id="profileImage" src="@Url.Content("~/images/profile/" + Model.ProfilePic)"
+                                 alt=""
+                                 style="width: 100%; height: 100%; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <span id="noImageText" class="text-muted">No image selected</span>
+                        }
+                    </div>
 
-        <form method="post" asp-action="Edit" asp-controller="Employee">
-            <!-- Hidden Field for EmpeId -->
+                    
+                    <input type="hidden" asp-for="ProfilePic" />
+
+                    <div class="mt-3">
+                        
+                        <input type="file" id="profilePicInput" name="ProfilePicFile" accept="image/*" class="form-control" />
+                        <span asp-validation-for="ProfilePic" class="text-danger small"></span>
+                    </div>
+                </div>
+        </div>
+
+        
+        <div class="col-md-8 rounded border p-3">
+            <h2 class="text-center mb-5">Edit Employee</h2>
+
             <input type="hidden" asp-for="EmpeId" />
 
-            <!-- Employee Code -->
             <div class="row mb-3">
                 <label asp-for="EmpeCode" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-8">
@@ -17,7 +47,6 @@
                 </div>
             </div>
 
-            <!-- Employee Name -->
             <div class="row mb-3">
                 <label asp-for="EmpeName" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-8">
@@ -26,7 +55,6 @@
                 </div>
             </div>
 
-            <!-- Date of Birth -->
             <div class="row mb-3">
                 <label asp-for="DateOfBirth" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-8">
@@ -35,7 +63,6 @@
                 </div>
             </div>
 
-            <!-- Gender -->
             <div class="row mb-3">
                 <label asp-for="Gender" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-8">
@@ -48,7 +75,6 @@
                 </div>
             </div>
 
-            <!-- Email -->
             <div class="row mb-3">
                 <label asp-for="Email" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-8">
@@ -57,7 +83,6 @@
                 </div>
             </div>
 
-            <!-- Phone Number -->
             <div class="row mb-3">
                 <label asp-for="PhoneNo" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-8">
@@ -82,16 +107,14 @@
                 </div>
             </div>
 
-            <!-- Job Title -->
             <div class="row mb-3">
-                <label asp-for="JobTitle" class="col-sm-4 col-form-label"></label>
+                <label asp-for="JobTitle" class="col-sm-4 col-form-label">Role</label>
                 <div class="col-sm-8">
                     <input asp-for="JobTitle" class="form-control">
                     <span asp-validation-for="JobTitle" class="text-danger"></span>
                 </div>
             </div>
 
-            <!-- Department ID -->
             <div class="row mb-3">
                 <label asp-for="DeptId" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-8">
@@ -100,7 +123,6 @@
                 </div>
             </div>
 
-            <!-- Join Date -->
             <div class="row mb-3">
                 <label asp-for="JoinDate" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-8">
@@ -109,7 +131,6 @@
                 </div>
             </div>
 
-            <!-- Status -->
             <div class="row mb-3">
                 <label asp-for="Status" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-8">
@@ -122,7 +143,7 @@
             </div>
 
             <div class="row mb-3">
-                <label asp-for="TerminateDate" class="col-sm-4 col-form-label"></label>
+                <label asp-for="TerminateDate" class="col-sm-4 col-form-label">Last Date</label>
                 <div class="col-sm-8">
                     <input type="date" asp-for="TerminateDate" class="form-control">
                     <span asp-validation-for="TerminateDate" class="text-danger"></span>
@@ -162,22 +183,12 @@
             </div>
 
             <div class="row mb-3">
-                <label asp-for="ProfilePic" class="col-sm-4 col-form-label"></label>
-                <div class="col-sm-8">
-                    <input asp-for="ProfilePic" class="form-control">
-                    <span asp-validation-for="ProfilePic" class="text-danger"></span>
-                </div>
-            </div>
-
-            <!-- CreatedAt (Readonly) -->
-            <div class="row mb-3">
                 <label asp-for="CreatedAt" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-8">
                     <input asp-for="CreatedAt" class="form-control-plaintext" readonly>
                 </div>
             </div>
 
-            <!-- Submit and Cancel Buttons -->
             <div class="row">
                 <div class="offset-sm-4 col-sm-4 d-grid">
                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -186,12 +197,90 @@
                     <a class="btn btn-outline-warning" asp-controller="Employee" asp-action="Index" role="button">Cancel</a>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</form>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const profilePicInput = document.getElementById('profilePicInput');
+            const profileImage = document.getElementById('profileImage');
+            const profilePicContainer = document.getElementById('profilePicContainer');
+            const noImageText = document.getElementById('noImageText');
+
+            if (profilePicInput) {
+                profilePicInput.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        
+                        const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                        if (!validTypes.includes(file.type)) {
+                            alert('Please select a valid image file (JPEG, PNG, GIF)');
+                            event.target.value = ''; 
+                            if (profileImage) profileImage.src = ''; 
+                            if (noImageText) noImageText.style.display = 'block'; 
+                            return;
+                        }
+
+                        
+                        const maxSize = 5 * 1024 * 1024; 
+                        if (file.size > maxSize) {
+                            alert('Image size should not exceed 2MB');
+                            event.target.value = ''; 
+                            if (profileImage) profileImage.src = ''; 
+                            if (noImageText) noImageText.style.display = 'block'; 
+                            return;
+                        }
+
+                        const reader = new FileReader();
+
+                        reader.onload = function(e) {
+                            
+                            if (noImageText) noImageText.style.display = 'none';
+
+                            
+                            let img = document.getElementById('profileImage');
+                            if (!img) {
+                                img = document.createElement('img');
+                                img.id = 'profileImage';
+                                img.alt = 'Profile Picture';
+                                img.style.width = '100%';
+                                img.style.height = '100%';
+                                img.style.objectFit = 'cover';
+                                profilePicContainer.appendChild(img);
+                            }
+                            img.src = e.target.result;
+
+                            
+                            profilePicContainer.style.border = 'none';
+                        };
+
+                        reader.readAsDataURL(file);
+                    } else {
+                        
+                        if (profileImage && profileImage.src === '') { 
+                            if (noImageText) noImageText.style.display = 'block';
+                            profilePicContainer.style.border = '2px dashed #dc3545'; 
+                        }
+                    }
+                });
+            }
+
+            
+            if (profileImage && profileImage.src && profileImage.src.includes("/images/profile/")) {
+                if (noImageText) {
+                    noImageText.style.display = 'none';
+                    profilePicContainer.style.border = 'none'; 
+                }
+            } else {
+                 
+                 profilePicContainer.style.border = '2px dashed #dc3545';
+                 if (noImageText) noImageText.style.display = 'block';
+            }
+        });
+    </script>
 }

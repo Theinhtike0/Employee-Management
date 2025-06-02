@@ -10,6 +10,8 @@ namespace HR_Products.Models.Entitites
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
         public int EmpeId { get; set; }
 
+        public string UserGuid { get; set; }
+
         [Required (ErrorMessage = "Employee Code is required.")]
         [StringLength(50)]
         public string EmpeCode { get; set; }
