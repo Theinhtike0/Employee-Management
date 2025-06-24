@@ -54,102 +54,172 @@ namespace HR_Products.Controllers
         }
 
 
-
         //[HttpPost]
         //[ValidateAntiForgeryToken]
         //public async Task<IActionResult> Create(LeaveRequestViewModel viewModel)
         //{
-        //    var leaveType = await _context.LEAV_TYPE
-        //        .FirstOrDefaultAsync(lt => lt.LEAV_TYPE_ID == viewModel.LeaveTypeId);
-
-        //    if (leaveType == null)
+        //    try
         //    {
-        //        ModelState.AddModelError("LeaveTypeId", "Invalid leave type selected");
+        //        var leaveType = await _context.LEAV_TYPE
+        //            .FirstOrDefaultAsync(lt => lt.LEAV_TYPE_ID == viewModel.LeaveTypeId);
+
+        //        if (leaveType == null)
+        //        {
+        //            ModelState.AddModelError("LeaveTypeId", "Invalid leave type selected");
+        //            await PopulateViewBags();
+        //            return HandleResponse(View(viewModel));
+        //        }
+
+        //        if (viewModel.AttachmentFile != null)
+        //        {
+        //            if (viewModel.AttachmentFile.Length > 5 * 1024 * 1024) // 5MB
+        //            {
+        //                ModelState.AddModelError("AttachmentFile", "File size must be less than 5MB");
+        //                await PopulateViewBags();
+        //                return HandleResponse(View(viewModel));
+        //            }
+
+        //            var allowedExtensions = new[] { ".pdf", ".jpg", ".png", ".doc", ".docx" };
+        //            var fileExtension = Path.GetExtension(viewModel.AttachmentFile.FileName).ToLower();
+        //            if (!allowedExtensions.Contains(fileExtension))
+        //            {
+        //                ModelState.AddModelError("AttachmentFile", "Only PDF, JPG, PNG, DOC and DOCX files are allowed");
+        //                await PopulateViewBags();
+        //                return HandleResponse(View(viewModel));
+        //            }
+        //        }
+
+        //        if (leaveType.LEAV_TYPE_NAME != "CL" && (viewModel.ApprovedById == null || viewModel.ApprovedById == 0))
+        //        {
+        //            ModelState.AddModelError("", "No approver was assigned for this leave type");
+        //            await PopulateViewBags();
+        //            return HandleResponse(View(viewModel));
+        //        }
+        //        var employee = await _context.EMPE_PROFILE
+        //            .FirstOrDefaultAsync(e => e.EmpeId == viewModel.EmployeeId);
+
+        //        if (employee == null)
+        //        {
+        //            ModelState.AddModelError("EmployeeId", "Selected employee not found");
+        //            await PopulateViewBags();
+        //            return HandleResponse(View(viewModel));
+        //        }
+
+        //        var existingLeave = await _context.LEAV_REQUESTS
+        //            .AnyAsync(lr => lr.EmployeeId == viewModel.EmployeeId
+        //            && ((viewModel.StartDate >= lr.StartDate && viewModel.StartDate <= lr.EndDate)
+        //                || (viewModel.EndDate >= lr.StartDate && viewModel.EndDate <= lr.EndDate)
+        //                || (lr.StartDate >= viewModel.StartDate && lr.StartDate <= viewModel.EndDate))
+        //            && lr.Status == "Approved");
+
+        //        if (existingLeave)
+        //        {
+        //            ModelState.AddModelError("", "You already have an approved leave for these dates. Choose other days.");
+        //            await PopulateViewBags();
+        //            return HandleResponse(View(viewModel), "Conflict");
+        //        }
+
+        //        var holidays = await _context.HOLIDAYS
+        //            .Where(h => h.HolidayDate >= viewModel.StartDate && h.HolidayDate <= viewModel.EndDate)
+        //            .ToListAsync();
+
+        //        if (holidays.Any())
+        //        {
+        //            ModelState.AddModelError("", $"The selected date range includes holidays: {string.Join(", ", holidays.Select(h => h.HolidayDate.ToShortDateString()))}");
+        //            await PopulateViewBags();
+        //            return HandleResponse(View(viewModel), "Holiday Conflict");
+        //        }
+
+        //        viewModel.Duration = CalculateDuration(viewModel.StartDate, viewModel.EndDate, viewModel.DurationType);
+
+        //        var currentUsedDays = await _context.LEAV_REQUESTS
+        //            .Where(lr => lr.EmployeeId == viewModel.EmployeeId
+        //                        && lr.LeaveTypeId == viewModel.LeaveTypeId
+        //                        && lr.Status == "Approved")
+        //            .SumAsync(lr => lr.Duration);
+
+        //        var currentBalance = leaveType.DEFAULT_DAY_PER_YEAR - currentUsedDays;
+
+        //        if (leaveType.LEAV_TYPE_NAME == "CL" && currentBalance < viewModel.Duration)
+        //        {
+        //            ModelState.AddModelError("", $"Not enough leave balance. Available: {currentBalance} days");
+        //            await PopulateViewBags();
+        //            return HandleResponse(View(viewModel), "Insufficient Balance");
+        //        }
+
+        //        string attachmentPath = null;
+        //        byte[] attachmentFileData = null;
+
+        //        if (viewModel.AttachmentFile != null && viewModel.AttachmentFile.Length > 0)
+        //        {
+        //            try
+        //            {
+        //                var uploadsDir = Path.Combine(_hostEnvironment.WebRootPath, "uploads", "leave_attachments");
+        //                Directory.CreateDirectory(uploadsDir);
+
+        //                var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(viewModel.AttachmentFile.FileName)}";
+        //                var filePath = Path.Combine(uploadsDir, uniqueFileName);
+
+        //                using (var stream = new FileStream(filePath, FileMode.Create))
+        //                {
+        //                    await viewModel.AttachmentFile.CopyToAsync(stream);
+        //                }
+
+        //                attachmentPath = $"/uploads/leave_attachments/{uniqueFileName}";
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                ModelState.AddModelError("AttachmentFile", $"Failed to save file: {ex.Message}");
+        //                await PopulateViewBags();
+        //                return HandleResponse(View(viewModel), "File Upload Error");
+        //            }
+        //        }
+
+        //        var isAutoApproved = leaveType.LEAV_TYPE_NAME == "CL";
+        //        var status = isAutoApproved ? "Approved" : "Pending";
+        //        var approverName = isAutoApproved ? "Auto-Approved" : viewModel.ApproverName;
+
+        //        var leaveRequest = new LeaveRequest
+        //        {
+        //            EmployeeId = viewModel.EmployeeId,
+        //            Employee = employee,
+        //            EmpeName = employee.EmpeName,
+        //            LeaveTypeId = viewModel.LeaveTypeId,
+        //            LeaveType = leaveType,
+        //            LeaveTypeName = leaveType.LEAV_TYPE_NAME,
+        //            StartDate = viewModel.StartDate,
+        //            EndDate = viewModel.EndDate,
+        //            DurationType = viewModel.DurationType,
+        //            Duration = viewModel.Duration,
+        //            Reason = viewModel.Reason,
+        //            Status = status,
+        //            RequestedAt = DateTime.Now,
+        //            ApprovedAt = isAutoApproved ? DateTime.Now : (DateTime?)null,
+        //            ApprovedById = isAutoApproved ? null : viewModel.ApprovedById,
+        //            ApproverName = approverName,
+        //            UsedToDate = isAutoApproved ? currentUsedDays + viewModel.Duration : currentUsedDays,
+        //            AccrualBalance = isAutoApproved ? currentBalance - viewModel.Duration : currentBalance,
+        //            OriginalUsedToDate = currentUsedDays,
+        //            OriginalAccrualBalance = currentBalance,
+        //            LeaveBalance = leaveType.DEFAULT_DAY_PER_YEAR,
+        //            AttachmentFileName = viewModel.AttachmentFile?.FileName,
+        //            AttachmentContentType = viewModel.AttachmentFile?.ContentType,
+        //            AttachmentPath = attachmentPath,
+        //            AttachmentFileData = attachmentFileData
+        //        };
+
+        //        _context.LEAV_REQUESTS.Add(leaveRequest);
+        //        await _context.SaveChangesAsync();
+
+        //        TempData["SuccessMessage"] = $"Leave request submitted successfully!";
+        //        return HandleResponse(RedirectToAction("Create"), status);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ModelState.AddModelError("", $"An error occurred while saving the leave request: {ex.Message}");
         //        await PopulateViewBags();
-        //        return View(viewModel);
+        //        return HandleResponse(View(viewModel), "Error");
         //    }
-
-        //    if (leaveType.LEAV_TYPE_NAME != "CL" && (viewModel.ApprovedById == null || viewModel.ApprovedById == 0))
-        //    {
-        //        ModelState.AddModelError("", "No approver was assigned for this leave type");
-        //        await PopulateViewBags();
-        //        return View(viewModel);
-        //    }
-
-        //    var employee = await _context.EMPE_PROFILE
-        //        .FirstOrDefaultAsync(e => e.EmpeId == viewModel.EmployeeId);
-
-        //    if (employee == null)
-        //    {
-        //        ModelState.AddModelError("EmployeeId", "Selected employee not found");
-        //        await PopulateViewBags();
-        //        return View(viewModel);
-        //    }
-
-        //    var holidays = await _context.HOLIDAYS
-        //        .Where(h => h.HolidayDate >= viewModel.StartDate && h.HolidayDate <= viewModel.EndDate)
-        //        .ToListAsync();
-
-        //    if (holidays.Any())
-        //    {
-        //        ModelState.AddModelError("", $"The selected date range includes holidays: {string.Join(", ", holidays.Select(h => h.HolidayDate.ToShortDateString()))}");
-        //        await PopulateViewBags();
-        //        return View(viewModel);
-        //    }
-
-        //    viewModel.Duration = CalculateDuration(viewModel.StartDate, viewModel.EndDate, viewModel.DurationType);
-
-        //    var currentUsedDays = await _context.LEAV_REQUESTS
-        //        .Where(lr => lr.EmployeeId == viewModel.EmployeeId
-        //                  && lr.LeaveTypeId == viewModel.LeaveTypeId
-        //                  && lr.Status == "Approved")
-        //        .SumAsync(lr => lr.Duration);
-
-        //    var currentBalance = leaveType.DEFAULT_DAY_PER_YEAR - currentUsedDays;
-
-        //    if (leaveType.LEAV_TYPE_NAME == "CL" && currentBalance < viewModel.Duration)
-        //    {
-        //        ModelState.AddModelError("", $"Not enough leave balance. Available: {currentBalance} days");
-        //        await PopulateViewBags();
-        //        return View(viewModel);
-        //    }
-
-        //    var leaveRequest = new LeaveRequest
-        //    {
-        //        EmployeeId = viewModel.EmployeeId,
-        //        Employee = employee,
-        //        EmpeName = employee.EmpeName,
-        //        LeaveTypeId = viewModel.LeaveTypeId,
-        //        LeaveType = leaveType,
-        //        LeaveTypeName = leaveType.LEAV_TYPE_NAME,
-        //        StartDate = viewModel.StartDate,
-        //        EndDate = viewModel.EndDate,
-        //        DurationType = viewModel.DurationType,
-        //        Duration = viewModel.Duration,
-        //        Reason = viewModel.Reason,
-        //        Status = leaveType.LEAV_TYPE_NAME == "CL" ? "Approved" : "Pending",
-        //        RequestedAt = DateTime.Now,
-        //        ApprovedAt = leaveType.LEAV_TYPE_NAME == "CL" ? DateTime.Now : null,
-        //        ApprovedById = leaveType.LEAV_TYPE_NAME == "CL" ? null : viewModel.ApprovedById,
-        //        ApproverName = leaveType.LEAV_TYPE_NAME == "CL" ? "Auto-Approved" : viewModel.ApproverName,
-        //        UsedToDate = currentUsedDays,
-        //        AccrualBalance = currentBalance,
-        //        OriginalUsedToDate = currentUsedDays,
-        //        OriginalAccrualBalance = currentBalance,
-        //        LeaveBalance = leaveType.DEFAULT_DAY_PER_YEAR
-        //    };
-
-        //    if (leaveType.LEAV_TYPE_NAME == "CL")
-        //    {
-        //        leaveRequest.UsedToDate = currentUsedDays + viewModel.Duration;
-        //        leaveRequest.AccrualBalance = currentBalance - viewModel.Duration;
-        //    }
-
-        //    _context.LEAV_REQUESTS.Add(leaveRequest);
-        //    await _context.SaveChangesAsync();
-
-        //    TempData["SuccessMessage"] = "Leave request submitted successfully!";
-        //    return RedirectToAction("Create");
         //}
 
         [HttpPost]
@@ -158,6 +228,10 @@ namespace HR_Products.Controllers
         {
             try
             {
+                // Get current year
+                int currentYear = DateTime.Now.Year;
+
+                // Validate leave type
                 var leaveType = await _context.LEAV_TYPE
                     .FirstOrDefaultAsync(lt => lt.LEAV_TYPE_ID == viewModel.LeaveTypeId);
 
@@ -168,6 +242,7 @@ namespace HR_Products.Controllers
                     return HandleResponse(View(viewModel));
                 }
 
+                // Validate attachment
                 if (viewModel.AttachmentFile != null)
                 {
                     if (viewModel.AttachmentFile.Length > 5 * 1024 * 1024) // 5MB
@@ -187,12 +262,15 @@ namespace HR_Products.Controllers
                     }
                 }
 
+                // Validate approver for non-CL leave types
                 if (leaveType.LEAV_TYPE_NAME != "CL" && (viewModel.ApprovedById == null || viewModel.ApprovedById == 0))
                 {
                     ModelState.AddModelError("", "No approver was assigned for this leave type");
                     await PopulateViewBags();
                     return HandleResponse(View(viewModel));
                 }
+
+                // Validate employee
                 var employee = await _context.EMPE_PROFILE
                     .FirstOrDefaultAsync(e => e.EmpeId == viewModel.EmployeeId);
 
@@ -230,17 +308,32 @@ namespace HR_Products.Controllers
 
                 viewModel.Duration = CalculateDuration(viewModel.StartDate, viewModel.EndDate, viewModel.DurationType);
 
+               
                 var currentUsedDays = await _context.LEAV_REQUESTS
                     .Where(lr => lr.EmployeeId == viewModel.EmployeeId
                                 && lr.LeaveTypeId == viewModel.LeaveTypeId
-                                && lr.Status == "Approved")
+                                && lr.Status == "Approved"
+                                && lr.StartDate.Year == currentYear)
                     .SumAsync(lr => lr.Duration);
 
-                var currentBalance = leaveType.DEFAULT_DAY_PER_YEAR - currentUsedDays;
+                var leaveBalance = await _context.LEAV_BALANCE
+                    .FirstOrDefaultAsync(lb => lb.EmpeId == viewModel.EmployeeId
+                                            && lb.LeaveTypeId == viewModel.LeaveTypeId
+                                            && lb.Year == currentYear);
 
-                if (leaveType.LEAV_TYPE_NAME == "CL" && currentBalance < viewModel.Duration)
+                decimal availableBalance;
+                if (leaveBalance != null)
                 {
-                    ModelState.AddModelError("", $"Not enough leave balance. Available: {currentBalance} days");
+                    availableBalance = leaveBalance.Balance - currentUsedDays;
+                }
+                else
+                {
+                    availableBalance = leaveType.DEFAULT_DAY_PER_YEAR - currentUsedDays;
+                }
+
+                if (leaveType.LEAV_TYPE_NAME == "CL" && availableBalance < viewModel.Duration)
+                {
+                    ModelState.AddModelError("", $"Not enough leave balance. Available: {availableBalance} days");
                     await PopulateViewBags();
                     return HandleResponse(View(viewModel), "Insufficient Balance");
                 }
@@ -277,6 +370,7 @@ namespace HR_Products.Controllers
                 var status = isAutoApproved ? "Approved" : "Pending";
                 var approverName = isAutoApproved ? "Auto-Approved" : viewModel.ApproverName;
 
+             
                 var leaveRequest = new LeaveRequest
                 {
                     EmployeeId = viewModel.EmployeeId,
@@ -296,9 +390,9 @@ namespace HR_Products.Controllers
                     ApprovedById = isAutoApproved ? null : viewModel.ApprovedById,
                     ApproverName = approverName,
                     UsedToDate = isAutoApproved ? currentUsedDays + viewModel.Duration : currentUsedDays,
-                    AccrualBalance = isAutoApproved ? currentBalance - viewModel.Duration : currentBalance,
+                    AccrualBalance = isAutoApproved ? availableBalance - viewModel.Duration : availableBalance,
                     OriginalUsedToDate = currentUsedDays,
-                    OriginalAccrualBalance = currentBalance,
+                    OriginalAccrualBalance = availableBalance,
                     LeaveBalance = leaveType.DEFAULT_DAY_PER_YEAR,
                     AttachmentFileName = viewModel.AttachmentFile?.FileName,
                     AttachmentContentType = viewModel.AttachmentFile?.ContentType,
@@ -307,6 +401,26 @@ namespace HR_Products.Controllers
                 };
 
                 _context.LEAV_REQUESTS.Add(leaveRequest);
+
+                if (leaveBalance != null) 
+                {
+                    leaveBalance.Balance = (int)(leaveBalance.Balance - viewModel.Duration);
+                }
+                else
+                {
+                    var newBalance = new LeaveBalance
+                    {
+                        EmpeId = viewModel.EmployeeId, 
+                        LeaveTypeId = viewModel.LeaveTypeId,
+                        Balance = (int)(leaveType.DEFAULT_DAY_PER_YEAR - viewModel.Duration), 
+                        Year = currentYear,
+                        EmpeName = employee.EmpeName, 
+                        LeaveTypeName = leaveType.LEAV_TYPE_NAME, 
+                        CreatedDate = DateTime.Now
+                    };
+
+                    _context.LEAV_BALANCE.Add(newBalance); 
+                }
                 await _context.SaveChangesAsync();
 
                 TempData["SuccessMessage"] = $"Leave request submitted successfully!";
@@ -319,7 +433,6 @@ namespace HR_Products.Controllers
                 return HandleResponse(View(viewModel), "Error");
             }
         }
-
         private IActionResult HandleResponse(IActionResult result, string status = null)
         {
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")

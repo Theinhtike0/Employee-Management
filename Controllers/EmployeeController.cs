@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using HR_Products.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting; 
-using System.IO; 
+using System.IO;
+using HR_Products.ViewModels;
+
 
 namespace HR_Products.Controllers
 {
@@ -19,68 +21,72 @@ namespace HR_Products.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
-        
+
         public async Task<IActionResult> Index()
         {
             var employees = await _context.EMPE_PROFILE.ToListAsync();
-            
-            var employeesWithIndex = employees
-                .Select((employee, index) => new { Employee = employee, Index = index + 1 })
-                .ToList();
 
-            return View(employees);
+            var viewModel = new EmployeeListViewModel
+            {
+                Employees = employees,
+                IsAdminOrHrAdmin = User.IsInRole("Admin") || User.IsInRole("HR-Admin"),
+                IsFinanceAdmin = User.IsInRole("Finance-Admin")
+            };
+
+            return View(viewModel);
         }
 
-        
+
         [HttpGet]
         public IActionResult Create()
         {
-           
+
             var newEmployeeProfile = new EmployeeProfile();
-            newEmployeeProfile.JoinDate = DateTime.Today; 
+            newEmployeeProfile.JoinDate = DateTime.Today;
             return View(newEmployeeProfile);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        
+
         public async Task<IActionResult> Create(EmployeeProfile empeprofile, IFormFile ProfilePicFile)
         {
-            
+
             var existingProfile = await _context.EMPE_PROFILE
                 .FirstOrDefaultAsync(ep => ep.EmpeCode == empeprofile.EmpeCode);
 
             if (existingProfile != null)
             {
                 ModelState.AddModelError("EmpeCode", "An employee profile with this EMPE ID already exists.");
-                
+
                 return View(empeprofile);
             }
             if (ProfilePicFile != null && ProfilePicFile.Length > 0)
             {
                 var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images", "profile");
 
-                
+
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
-                var fileName = Guid.NewGuid() + Path.GetExtension(ProfilePicFile.FileName); 
+                var fileName = Guid.NewGuid() + Path.GetExtension(ProfilePicFile.FileName);
                 var filePath = Path.Combine(uploadsFolder, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await ProfilePicFile.CopyToAsync(stream); 
+                    await ProfilePicFile.CopyToAsync(stream);
                 }
 
-                empeprofile.ProfilePic = fileName; 
+                empeprofile.ProfilePic = fileName;
             }
             else
             {
-               
+
             }
 
+            empeprofile.DeptId = 1;
             empeprofile.CreatedAt = DateTime.Now;
             empeprofile.UpdatedAt = DateTime.Now;
 
@@ -106,7 +112,7 @@ namespace HR_Products.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EmployeeProfile employeeProfile, IFormFile ProfilePicFile)
         {
-           
+
 
             var existingEmployee = await _context.EMPE_PROFILE.FindAsync(id);
             if (existingEmployee == null)
@@ -192,7 +198,7 @@ namespace HR_Products.Controllers
                 return NotFound();
             }
 
-            
+
             if (!string.IsNullOrEmpty(employee.ProfilePic))
             {
                 var imagePath = Path.Combine(_hostingEnvironment.WebRootPath, "images", "profile", employee.ProfilePic);
@@ -259,6 +265,69 @@ namespace HR_Products.Controllers
             }
 
             return employee;
+        }
+
+        public async Task<IActionResult> Adjustment()
+        {
+            try
+            {
+                var currentUser = GetCurrentUser();
+                bool isAdminRoleUser = User.IsInRole("Admin") || User.IsInRole("HR-Admin");
+                bool isFinanceAdminByJobTitle = (currentUser?.JobTitle == "Finance-Admin");
+                bool canSeeAllRecords = isAdminRoleUser || isFinanceAdminByJobTitle;
+
+                IQueryable<EmployeeProfile> employeeQuery = _context.EMPE_PROFILE;
+
+                if (!canSeeAllRecords)
+                {
+                    
+                    if (currentUser == null)
+                    {
+                        TempData["ErrorMessage"] = "Your employee profile could not be found. Please log in again.";
+                        return View(new List<EmployeeAdjustmentViewModel>());
+                    }
+                    employeeQuery = employeeQuery.Where(e => e.EmpeId == currentUser.EmpeId);
+                }
+
+                var adjustmentList = await employeeQuery
+                    .Select(employee => new
+                    {
+                        
+                        Employee = employee, 
+                        CalculatedServiceYear = (DateTime.Now.Year - employee.JoinDate.Year) -
+                                                (employee.JoinDate.Date > DateTime.Now.AddYears(-(DateTime.Now.Year - employee.JoinDate.Year)).Date ? 1 : 0)
+                    })
+                    .Where(x => x.CalculatedServiceYear % 2 == 0)
+                    .Select(x => new EmployeeAdjustmentViewModel
+                    {
+                        EmpeId = x.Employee.EmpeId,
+                        ProfilePic = x.Employee.ProfilePic,
+                        EmpeName = x.Employee.EmpeName,
+                        Email = x.Employee.Email,
+                        JoinDate = x.Employee.JoinDate,
+                        DateOfBirth = x.Employee.DateOfBirth,
+                        Age = x.Employee.DateOfBirth.HasValue
+                                ? (DateTime.Now.Year - x.Employee.DateOfBirth.Value.Year) -
+                                  (x.Employee.DateOfBirth.Value.Date > DateTime.Now.AddYears(-(DateTime.Now.Year - x.Employee.DateOfBirth.Value.Year)).Date ? 1 : 0)
+                                : (int?)null,
+                        ServiceYear = x.CalculatedServiceYear, 
+                        LatestNetPay = _context.PAYROLLS
+                                               .Where(p => p.EmpeId == x.Employee.EmpeId)
+                                               .OrderByDescending(p => p.PayDate)
+                                               .Select(p => (decimal?)p.NetPay) 
+                                               .FirstOrDefault() 
+                    })
+                    .OrderBy(x => x.EmpeName) 
+                    .ToListAsync();
+
+                return View(adjustmentList); 
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading employee adjustment data.";
+                
+                return View(new List<EmployeeAdjustmentViewModel>());
+            }
         }
     }
 }

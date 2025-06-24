@@ -6,6 +6,7 @@ wwwroot\images\profile\02c07fa9-c46f-4bc2-a8cf-109c2495be85.jpg
 wwwroot\images\profile\0f25d183-e08e-4e26-9a8c-fcc5243377d0.jpg
 wwwroot\images\profile\2196e743-8c4b-4c94-930d-46ace03b3aee.jpg
 wwwroot\images\profile\5a1d89f7-02e6-4183-b077-61e45a312f79.jpg
+wwwroot\images\profile\5ecd0a7a-7066-4632-82f4-32374f8c8f22.png
 wwwroot\images\profile\5f8cb8ab-d53d-4213-a81b-844cd77f1c23.jpg
 wwwroot\images\profile\6bd9715f-b2ca-45a4-a310-b2af3b4e8385.jpg
 wwwroot\images\profile\a8ae8a00-97b2-45f1-9958-a3456fa09496.jpg
@@ -75,10 +76,23 @@ wwwroot\lib\jquery-validation\LICENSE.md
 wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js
 wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js
 wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+wwwroot\pension-documents\5328e9cb-1540-4f49-b124-46f275827d61.jpg
+wwwroot\pension-documents\6f9d08e5-d9d7-409b-9313-25a430671824.jpg
+wwwroot\pension-documents\9500222e-297e-49cb-b27e-9af91b369853.jpg
+wwwroot\pension-documents\9f04c5ce-f8b3-4d94-865b-4f41fbdf7a7e.jpg
+wwwroot\pension-documents\ac495de1-2d3d-46a0-b4e5-8be61bb1dc69_r5 (4) (2).jpg
+wwwroot\pension-documents\aeffafed-66e5-4d16-b11c-84d749490ce9.jpg
+wwwroot\pension-documents\e1bbf185-4f69-4a9f-b4ec-e620020270df.jpg
+wwwroot\pension-documents\ed6eff46-80a8-415d-9d23-625aceb61841.jpg
+wwwroot\pension-documents\ffdca068-7566-45dc-ab38-4a3f351aaaeb.jpg
+wwwroot\templates\EmployeeReportTemplate.docx
+wwwroot\uploads\leave_attachments\0af5f8ba-aad2-410f-8173-038fae3e11c8_r5 (4).jpg
 wwwroot\uploads\leave_attachments\3dcc64d5-fc7f-4682-8e61-398057fa77ba_pw.png
 wwwroot\uploads\leave_attachments\504f911c-23da-4136-ae99-9dacf3c5b269_r2.jpg
 wwwroot\uploads\leave_attachments\5fcdf181-8a85-46b5-902c-15b19f0c0d60_login.png
+wwwroot\uploads\leave_attachments\8292b680-32db-4227-a4be-82b4bcf06e81_r5 (4).jpg
 wwwroot\uploads\leave_attachments\8a74feb5-6343-4c34-99ba-f3d6b1cc8235_r5.jpg
 wwwroot\uploads\leave_attachments\a4e0cced-7fa1-430a-97e6-f912a6d37b37_r5.jpg
 wwwroot\uploads\leave_attachments\b10f0c27-451c-495d-b8e3-9fac03942b27_r1.jpg
 wwwroot\uploads\leave_attachments\e298c870-bd33-4efc-ac19-1b25cbe44a66_r5.jpg
+wwwroot\uploads\leave_attachments\fe3041c6-3599-477d-9677-b1cc5508b325_r5 (4) (2) (1).jpg

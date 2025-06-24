@@ -1,4 +1,6 @@
-﻿<h2 class="text-center mb-5">List of Employees</h2>
+﻿@model HR_Products.ViewModels.EmployeeListViewModel
+
+<h2 class="text-center mb-5">List of Employees</h2>
 <link rel="stylesheet" href="~/css/site.css" />
 <div class="row mb-5">
     <div class="col">
@@ -17,13 +19,14 @@
             <th>Name</th>
             <th>Email</th>
             <th>Role</th>
-            <th>Status</th>
+            <th>Department</th>
+            <th>Position</th>
             <th>Join Date</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody id="employeeTableBody">
-        @foreach (var item in Model)
+        @foreach (var item in Model.Employees)  
         {
             <tr>
                 <td>
@@ -44,6 +47,7 @@
                 <td>@item.EmpeName</td>
                 <td>@item.Email</td>
                 <td>@item.JobTitle</td>
+                <td>@item.PostalCode</td>
                 <td>@item.Status</td>
                 <td>@item.JoinDate.ToString("MM/dd/yyyy")</td>
                 <td style="white-space: nowrap">
@@ -55,6 +59,8 @@
         }
     </tbody>
 </table>
+
+<!-- Rest of your view remains the same -->
 
 <div class="mt-4 d-flex justify-content-end">
     <nav>
@@ -72,7 +78,14 @@
 </div>
 
 <div class="mt-5 d-flex justify-content-start">
-    <a class="btn btn-outline-warning btn-md" style="width: 123px;" asp-controller="Admin" asp-action="Dashboard" role="button">Back</a>
+    @if (Model.IsAdminOrHrAdmin)
+    {
+        <a class="btn btn-outline-warning btn-md" style="width: 146px;" asp-controller="Admin" asp-action="Dashboard" role="button">Back</a>
+    }
+    else
+    {
+        <a class="btn btn-outline-warning btn-md" style="width: 100px;" href="javascript:history.back()" role="button">Back</a>
+    }
 </div>
 
 <script>

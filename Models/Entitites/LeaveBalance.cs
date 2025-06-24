@@ -9,6 +9,8 @@ namespace HR_Products.Models.Entitites
         public int EmpeId { get; set; }
         public int LeaveTypeId { get; set; }
         public int Balance { get; set; }
+
+        public int Year { get; set; }
         public string EmpeName { get; set; }   
         public string LeaveTypeName { get; set; }
         public DateTime CreatedDate { get; set; } 

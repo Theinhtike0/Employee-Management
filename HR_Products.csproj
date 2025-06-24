@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DocX" Version="4.0.25105.5786" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.3" />
@@ -25,10 +26,12 @@
     <PackageReference Include="System.Collections.NonGeneric" Version="4.3.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0" />
     <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
+    <PackageReference Include="Xceed.Workbooks.NET" Version="3.0.25228.6154" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\images\profile\" />
+    <Folder Include="wwwroot\templates\" />
     <Folder Include="wwwroot\uploads\leave_attachments\" />
   </ItemGroup>
 

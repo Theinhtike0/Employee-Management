@@ -1,4 +1,7 @@
-﻿using System;
+﻿
+
+using System;
+using System.Collections.Generic; 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,22 +10,22 @@ namespace HR_Products.Models.Entitites
     public class EmployeeProfile
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int EmpeId { get; set; }
 
         public string UserGuid { get; set; }
 
-        [Required (ErrorMessage = "Employee Code is required.")]
+        [Required(ErrorMessage = "Employee Code is required.")]
         [StringLength(50)]
         public string EmpeCode { get; set; }
 
-        [Required (ErrorMessage = "EmpeName is required.")]
+        [Required(ErrorMessage = "EmpeName is required.")]
         [StringLength(255)]
         public string EmpeName { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
 
-        [Required (ErrorMessage = "Gender is required.")]
+        [Required(ErrorMessage = "Gender is required.")]
         [StringLength(1)]
         public string Gender { get; set; }
 
@@ -50,7 +53,7 @@ namespace HR_Products.Models.Entitites
         public DateTime JoinDate { get; set; }
 
         [Required]
-        [StringLength(10)]
+        [StringLength(100)]
         public string Status { get; set; }
 
         public DateTime? TerminateDate { get; set; }
@@ -73,5 +76,8 @@ namespace HR_Products.Models.Entitites
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
+
+        public ICollection<PensionRequest> PensionRequests { get; set; } = new List<PensionRequest>();
+
     }
 }

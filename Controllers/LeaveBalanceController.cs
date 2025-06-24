@@ -83,19 +83,22 @@ namespace HR_Products.Controllers
 
                 var leaveTypes = leaveTypeQuery.ToList();
                 var results = new List<LeaveBalanceViewModel>();
+                int currentYear = DateTime.Now.Year; // Get current year
 
                 foreach (var employee in employees)
                 {
                     var groupedBalances = leaveTypes.Select(lt => new LeaveBalanceDetail
                     {
                         LeaveType = lt.LEAV_TYPE_NAME,
-                        Balance = lt.DEFAULT_DAY_PER_YEAR
+                        Balance = lt.DEFAULT_DAY_PER_YEAR,
+                        
                     }).ToList();
 
                     results.Add(new LeaveBalanceViewModel
                     {
                         EmpeId = employee.EmpeId,
                         EmpeName = employee.EmpeName,
+                        Year = currentYear,
                         Age = CalculateAge(employee.DateOfBirth),
                         ServiceYear = CalculateServiceYears(employee.JoinDate),
                         LeaveBalances = groupedBalances

@@ -19,7 +19,9 @@
     <Import Project="$(NuGetPackageRoot)microsoft.aspnetcore.identity.ui\8.0.3\build\Microsoft.AspNetCore.Identity.UI.props" Condition="Exists('$(NuGetPackageRoot)microsoft.aspnetcore.identity.ui\8.0.3\build\Microsoft.AspNetCore.Identity.UI.props')" />
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <PkgXceed_Workbooks_NET Condition=" '$(PkgXceed_Workbooks_NET)' == '' ">C:\Users\USER\.nuget\packages\xceed.workbooks.net\3.0.25228.6154</PkgXceed_Workbooks_NET>
     <PkgMicrosoft_CodeAnalysis_Analyzers Condition=" '$(PkgMicrosoft_CodeAnalysis_Analyzers)' == '' ">C:\Users\USER\.nuget\packages\microsoft.codeanalysis.analyzers\3.3.3</PkgMicrosoft_CodeAnalysis_Analyzers>
     <PkgMicrosoft_EntityFrameworkCore_Tools Condition=" '$(PkgMicrosoft_EntityFrameworkCore_Tools)' == '' ">C:\Users\USER\.nuget\packages\microsoft.entityframeworkcore.tools\8.0.3</PkgMicrosoft_EntityFrameworkCore_Tools>
+    <PkgDocX Condition=" '$(PkgDocX)' == '' ">C:\Users\USER\.nuget\packages\docx\4.0.25105.5786</PkgDocX>
   </PropertyGroup>
 </Project>

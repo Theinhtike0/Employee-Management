@@ -24,6 +24,38 @@
                 </ul>
             </div>
 
+            <div class="menu-section">
+                <button class="menu-toggle">
+                    Employee Payroll
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <ul class="submenu">
+                    <li><a asp-controller="Employee" asp-action="Adjustment"><i class="fas fa-list me-1"></i>Adjustment List</a></li>
+                    <li><a asp-controller="Payroll" asp-action="Transaction"><i class="fas fa-chart-bar me-1"></i>Transaction List</a></li>
+                </ul>
+            </div>
+
+            <div class="menu-section">
+                <button class="menu-toggle">
+                    Employee Pension
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <ul class="submenu">
+                    <li><a asp-controller="Pension" asp-action="PensionRequest" class="nav-link"><i class="fas fa-chart-bar me-1"></i>Pension Request</a></li>
+                    <li><a asp-controller="Pension" asp-action="PensionList" class="nav-link"> <i class="fas fa-chart-bar me-1"></i>Pension List</a></li>
+                </ul>
+            </div>
+
+            <div class="menu-section">
+                <button class="menu-toggle">
+                    Report
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <ul class="submenu">
+                    <li><a asp-controller="Payroll" asp-action="Report"><i class="fas fa-list me-1"></i>Leave & Payroll Report</a></li>
+                </ul>
+            </div>
+
         </aside>
     </div>
 

@@ -20,3 +20,101 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Status badges */
+.badge-success {
+    background-color: #28a745;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+}
+
+.badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+/* Table improvements */
+#pensionTable th {
+    white-space: nowrap;
+}
+
+.btn-group-sm > .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+/* Toast notifications */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
+
+/* Modern table styling */
+.table {
+    font-size: 0.9rem;
+}
+
+    .table th {
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+    }
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Compact buttons */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+/* Status badges */
+.bg-success {
+    background-color: #28a745 !important;
+}
+
+.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529;
+}
+
+/* Action buttons */
+.btn-outline-success:hover {
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+.btn-outline-danger:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Dashboard Specific Styles */
+.welcome-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.module-card {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+    .module-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    /* Make all cards the same height */
+    .module-card .card-body {
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+    }

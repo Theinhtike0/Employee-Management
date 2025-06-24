@@ -3,12 +3,28 @@
   "WorkspaceRootPath": "E:\\CSharp\\HR_Products\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|e:\\csharp\\hr_products\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|e:\\csharp\\hr_products\\views\\leavebalance\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|solutionrelative:views\\leavebalance\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|e:\\csharp\\hr_products\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|e:\\csharp\\hr_products\\viewmodels\\leavebalanceviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|solutionrelative:viewmodels\\leavebalanceviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|e:\\csharp\\hr_products\\controllers\\leaverequestscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|solutionrelative:controllers\\leaverequestscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|e:\\csharp\\hr_products\\models\\entitites\\leavebalance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|solutionrelative:models\\entitites\\leavebalance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|e:\\csharp\\hr_products\\controllers\\leavebalancecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|solutionrelative:controllers\\leavebalancecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|e:\\csharp\\hr_products\\models\\entitites\\leavetype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A05A573D-37B1-427C-85B1-8370D54B78A8}|HR_Products.csproj|solutionrelative:models\\entitites\\leavetype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,7 +34,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 35,
+          "SelectedChildIndex": 36,
           "Children": [
             {
               "$type": "Bookmark",
@@ -162,28 +178,81 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "E:\\CSharp\\HR_Products\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "E:\\CSharp\\HR_Products\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-05-30T08:34:01.479Z",
+              "DocumentIndex": 1,
+              "Title": "LeaveBalanceViewModel.cs",
+              "DocumentMoniker": "E:\\CSharp\\HR_Products\\ViewModels\\LeaveBalanceViewModel.cs",
+              "RelativeDocumentMoniker": "ViewModels\\LeaveBalanceViewModel.cs",
+              "ToolTip": "E:\\CSharp\\HR_Products\\ViewModels\\LeaveBalanceViewModel.cs",
+              "RelativeToolTip": "ViewModels\\LeaveBalanceViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-22T14:41:58.253Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "E:\\CSharp\\HR_Products\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "E:\\CSharp\\HR_Products\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAFoAAAAAAAAAAAAAAFIAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "E:\\CSharp\\HR_Products\\Views\\LeaveBalance\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\LeaveBalance\\Index.cshtml",
+              "ToolTip": "E:\\CSharp\\HR_Products\\Views\\LeaveBalance\\Index.cshtml",
+              "RelativeToolTip": "Views\\LeaveBalance\\Index.cshtml",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAAE0AAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-22T14:41:04.135Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LeaveRequestsController.cs",
+              "DocumentMoniker": "E:\\CSharp\\HR_Products\\Controllers\\LeaveRequestsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\LeaveRequestsController.cs",
+              "ToolTip": "E:\\CSharp\\HR_Products\\Controllers\\LeaveRequestsController.cs",
+              "RelativeToolTip": "Controllers\\LeaveRequestsController.cs",
+              "ViewState": "AgIAAKYBAAAAAAAAAAAswLIBAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-30T08:33:52.463Z"
+              "WhenOpened": "2025-06-22T12:31:32.184Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "LeaveBalanceController.cs",
+              "DocumentMoniker": "E:\\CSharp\\HR_Products\\Controllers\\LeaveBalanceController.cs",
+              "RelativeDocumentMoniker": "Controllers\\LeaveBalanceController.cs",
+              "ToolTip": "E:\\CSharp\\HR_Products\\Controllers\\LeaveBalanceController.cs",
+              "RelativeToolTip": "Controllers\\LeaveBalanceController.cs",
+              "ViewState": "AgIAAE0AAAAAAAAAAAAIwGEAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-22T12:32:50.593Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "LeaveBalance.cs",
+              "DocumentMoniker": "E:\\CSharp\\HR_Products\\Models\\Entitites\\LeaveBalance.cs",
+              "RelativeDocumentMoniker": "Models\\Entitites\\LeaveBalance.cs",
+              "ToolTip": "E:\\CSharp\\HR_Products\\Models\\Entitites\\LeaveBalance.cs",
+              "RelativeToolTip": "Models\\Entitites\\LeaveBalance.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAkwAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-22T12:28:37.516Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "LeaveType.cs",
+              "DocumentMoniker": "E:\\CSharp\\HR_Products\\Models\\Entitites\\LeaveType.cs",
+              "RelativeDocumentMoniker": "Models\\Entitites\\LeaveType.cs",
+              "ToolTip": "E:\\CSharp\\HR_Products\\Models\\Entitites\\LeaveType.cs",
+              "RelativeToolTip": "Models\\Entitites\\LeaveType.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAowBAAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-22T12:24:27.951Z",
+              "EditorCaption": ""
             }
           ]
         },

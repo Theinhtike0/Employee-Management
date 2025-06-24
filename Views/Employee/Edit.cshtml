@@ -55,6 +55,23 @@
                 </div>
             </div>
 
+            
+            <div class="row mb-3">
+                <label asp-for="PostalCode" class="col-sm-4 col-form-label">Department</label>
+                <div class="col-sm-8">
+                    <input asp-for="PostalCode" class="form-control">
+                    <span asp-validation-for="PostalCode" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Position</label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="Status">
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+            </div>
+
             <div class="row mb-3">
                 <label asp-for="DateOfBirth" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-8">
@@ -115,30 +132,12 @@
                 </div>
             </div>
 
-            <div class="row mb-3">
-                <label asp-for="DeptId" class="col-sm-4 col-form-label"></label>
-                <div class="col-sm-8">
-                    <input asp-for="DeptId" class="form-control">
-                    <span asp-validation-for="DeptId" class="text-danger"></span>
-                </div>
-            </div>
 
             <div class="row mb-3">
                 <label asp-for="JoinDate" class="col-sm-4 col-form-label"></label>
                 <div class="col-sm-8">
                     <input type="date" asp-for="JoinDate" class="form-control">
                     <span asp-validation-for="JoinDate" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label asp-for="Status" class="col-sm-4 col-form-label"></label>
-                <div class="col-sm-8">
-                    <select asp-for="Status" class="form-select">
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-                    </select>
-                    <span asp-validation-for="Status" class="text-danger"></span>
                 </div>
             </div>
 
@@ -166,13 +165,6 @@
                 </div>
             </div>
 
-            <div class="row mb-3">
-                <label asp-for="PostalCode" class="col-sm-4 col-form-label"></label>
-                <div class="col-sm-8">
-                    <input asp-for="PostalCode" class="form-control">
-                    <span asp-validation-for="PostalCode" class="text-danger"></span>
-                </div>
-            </div>
 
             <div class="row mb-3">
                 <label asp-for="Country" class="col-sm-4 col-form-label"></label>

@@ -50,6 +50,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "DocX": {
+              "target": "Package",
+              "version": "[4.0.25105.5786, )"
+            },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[8.0.3, )"
@@ -101,6 +105,10 @@
             "System.Threading.Tasks": {
               "target": "Package",
               "version": "[4.3.0, )"
+            },
+            "Xceed.Workbooks.NET": {
+              "target": "Package",
+              "version": "[3.0.25228.6154, )"
             }
           },
           "imports": [

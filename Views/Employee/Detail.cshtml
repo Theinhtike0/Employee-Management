@@ -42,6 +42,9 @@
             <dt class="col-sm-4">Name</dt>
             <dd class="col-sm-8">@Html.DisplayFor(model => model.EmpeName)</dd>
 
+            <dt class="col-sm-4">Department</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.PostalCode)</dd>
+
             <dt class="col-sm-4">Date of Birth</dt>
             <dd class="col-sm-8">@Html.DisplayFor(model => model.DateOfBirth)</dd>
 
@@ -63,13 +66,13 @@
             <dt class="col-sm-4">Role</dt>
             <dd class="col-sm-8">@Html.DisplayFor(model => model.JobTitle)</dd>
 
-            <dt class="col-sm-4">Department</dt>
-            <dd class="col-sm-8">@Html.DisplayFor(model => model.DeptId)</dd>
+            @* <dt class="col-sm-4">Department</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.DeptId)</dd> *@
 
             <dt class="col-sm-4">Join Date</dt>
             <dd class="col-sm-8">@Html.DisplayFor(model => model.JoinDate)</dd>
 
-            <dt class="col-sm-4">Status</dt>
+            <dt class="col-sm-4">Position</dt>
             <dd class="col-sm-8">@Html.DisplayFor(model => model.Status)</dd>
 
             <dt class="col-sm-4">Last Date</dt>
@@ -80,9 +83,6 @@
 
             <dt class="col-sm-4">State</dt>
             <dd class="col-sm-8">@Html.DisplayFor(model => model.State)</dd>
-
-            <dt class="col-sm-4">Postal Code</dt>
-            <dd class="col-sm-8">@Html.DisplayFor(model => model.PostalCode)</dd>
 
             <dt class="col-sm-4">Country</dt>
             <dd class="col-sm-8">@Html.DisplayFor(model => model.Country)</dd>

@@ -30,8 +30,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>c2tiyv64ts</Fingerprint>
-      <Integrity>pAGv4ietcJNk/EwsQZ5BN9+K4MuNYS2a9wl4Jw+q9D0=</Integrity>
+      <Fingerprint>v2710sxetk</Fingerprint>
+      <Integrity>F1rgxGkjqE4qrjvrYTHBd7d3WdqIgVlVUGIXolcoHPw=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\site.css'))</OriginalItemSpec>
@@ -48,8 +48,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>mg910fn9ao</Fingerprint>
-      <Integrity>2s2qQynhYSLjjkOAKKPjzKqNROy199H3WmnDYO0/+Z0=</Integrity>
+      <Fingerprint>rbpz8eyb1e</Fingerprint>
+      <Integrity>90rx9qNBoQU3R7s3coGQKKqztUpzHS/h9AuClD0nbbk=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\styles.css'))</OriginalItemSpec>
@@ -161,6 +161,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\profile\5a1d89f7-02e6-4183-b077-61e45a312f79.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\profile\5ecd0a7a-7066-4632-82f4-32374f8c8f22.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>HR_Products</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/HR_Products</BasePath>
+      <RelativePath>images/profile/5ecd0a7a-7066-4632-82f4-32374f8c8f22.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>ewxa23mqn9</Fingerprint>
+      <Integrity>HtjTpPfOseV8IgwAK5WQXermCkAdOgCPyzm4I8VMZ0Q=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\profile\5ecd0a7a-7066-4632-82f4-32374f8c8f22.png'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\profile\5f8cb8ab-d53d-4213-a81b-844cd77f1c23.jpg'))">
       <SourceType>Package</SourceType>
@@ -354,8 +372,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>yqqfpefo02</Fingerprint>
-      <Integrity>KtbgxohJEg9furI4zB9wZu2TvHo6YNynrRVH3O+jFRw=</Integrity>
+      <Fingerprint>pitnanmfw5</Fingerprint>
+      <Integrity>z+Q0RL3HpHyDNowCReJ6w4jwakKadP9qFRILit9Ob8Q=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\script.js'))</OriginalItemSpec>
@@ -372,8 +390,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>xtxxf3hu2r</Fingerprint>
-      <Integrity>hRQyftXiu1lLX2P9Ly9xa4gHJgLeR1uGN5qegUobtGo=</Integrity>
+      <Fingerprint>3r8b2a0bt1</Fingerprint>
+      <Integrity>8ZRc1sGeVrPBx4lD717BgRaQekyh78QKV9SKsdt638U=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\site.js'))</OriginalItemSpec>
@@ -1404,6 +1422,204 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\lib\jquery\LICENSE.txt'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\5328e9cb-1540-4f49-b124-46f275827d61.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>HR_Products</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/HR_Products</BasePath>
+      <RelativePath>pension-documents/5328e9cb-1540-4f49-b124-46f275827d61.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>7s5ne239zj</Fingerprint>
+      <Integrity>BwOJ1o3QTC0rQO/iCauOgD0ZHn4jTf8JDD5tWL5e0hU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\5328e9cb-1540-4f49-b124-46f275827d61.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\6f9d08e5-d9d7-409b-9313-25a430671824.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>HR_Products</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/HR_Products</BasePath>
+      <RelativePath>pension-documents/6f9d08e5-d9d7-409b-9313-25a430671824.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>7s5ne239zj</Fingerprint>
+      <Integrity>BwOJ1o3QTC0rQO/iCauOgD0ZHn4jTf8JDD5tWL5e0hU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\6f9d08e5-d9d7-409b-9313-25a430671824.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\9500222e-297e-49cb-b27e-9af91b369853.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>HR_Products</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/HR_Products</BasePath>
+      <RelativePath>pension-documents/9500222e-297e-49cb-b27e-9af91b369853.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>7s5ne239zj</Fingerprint>
+      <Integrity>BwOJ1o3QTC0rQO/iCauOgD0ZHn4jTf8JDD5tWL5e0hU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\9500222e-297e-49cb-b27e-9af91b369853.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\9f04c5ce-f8b3-4d94-865b-4f41fbdf7a7e.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>HR_Products</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/HR_Products</BasePath>
+      <RelativePath>pension-documents/9f04c5ce-f8b3-4d94-865b-4f41fbdf7a7e.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>7s5ne239zj</Fingerprint>
+      <Integrity>BwOJ1o3QTC0rQO/iCauOgD0ZHn4jTf8JDD5tWL5e0hU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\9f04c5ce-f8b3-4d94-865b-4f41fbdf7a7e.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\ac495de1-2d3d-46a0-b4e5-8be61bb1dc69_r5 (4) (2).jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>HR_Products</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/HR_Products</BasePath>
+      <RelativePath>pension-documents/ac495de1-2d3d-46a0-b4e5-8be61bb1dc69_r5 (4) (2).jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>7s5ne239zj</Fingerprint>
+      <Integrity>BwOJ1o3QTC0rQO/iCauOgD0ZHn4jTf8JDD5tWL5e0hU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\ac495de1-2d3d-46a0-b4e5-8be61bb1dc69_r5 (4) (2).jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\aeffafed-66e5-4d16-b11c-84d749490ce9.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>HR_Products</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/HR_Products</BasePath>
+      <RelativePath>pension-documents/aeffafed-66e5-4d16-b11c-84d749490ce9.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>7s5ne239zj</Fingerprint>
+      <Integrity>BwOJ1o3QTC0rQO/iCauOgD0ZHn4jTf8JDD5tWL5e0hU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\aeffafed-66e5-4d16-b11c-84d749490ce9.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\e1bbf185-4f69-4a9f-b4ec-e620020270df.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>HR_Products</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/HR_Products</BasePath>
+      <RelativePath>pension-documents/e1bbf185-4f69-4a9f-b4ec-e620020270df.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>7s5ne239zj</Fingerprint>
+      <Integrity>BwOJ1o3QTC0rQO/iCauOgD0ZHn4jTf8JDD5tWL5e0hU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\e1bbf185-4f69-4a9f-b4ec-e620020270df.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\ed6eff46-80a8-415d-9d23-625aceb61841.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>HR_Products</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/HR_Products</BasePath>
+      <RelativePath>pension-documents/ed6eff46-80a8-415d-9d23-625aceb61841.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>7s5ne239zj</Fingerprint>
+      <Integrity>BwOJ1o3QTC0rQO/iCauOgD0ZHn4jTf8JDD5tWL5e0hU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\ed6eff46-80a8-415d-9d23-625aceb61841.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\ffdca068-7566-45dc-ab38-4a3f351aaaeb.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>HR_Products</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/HR_Products</BasePath>
+      <RelativePath>pension-documents/ffdca068-7566-45dc-ab38-4a3f351aaaeb.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>7s5ne239zj</Fingerprint>
+      <Integrity>BwOJ1o3QTC0rQO/iCauOgD0ZHn4jTf8JDD5tWL5e0hU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\pension-documents\ffdca068-7566-45dc-ab38-4a3f351aaaeb.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\templates\EmployeeReportTemplate.docx'))">
+      <SourceType>Package</SourceType>
+      <SourceId>HR_Products</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/HR_Products</BasePath>
+      <RelativePath>templates/EmployeeReportTemplate.docx</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>97l6ltmm8d</Fingerprint>
+      <Integrity>K6ZbtKPir9LQfxiJ2uOd70tWMi4wp9+yQcpDw5jFDEU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\templates\EmployeeReportTemplate.docx'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\leave_attachments\0af5f8ba-aad2-410f-8173-038fae3e11c8_r5 (4).jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>HR_Products</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/HR_Products</BasePath>
+      <RelativePath>uploads/leave_attachments/0af5f8ba-aad2-410f-8173-038fae3e11c8_r5 (4).jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>7s5ne239zj</Fingerprint>
+      <Integrity>BwOJ1o3QTC0rQO/iCauOgD0ZHn4jTf8JDD5tWL5e0hU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\leave_attachments\0af5f8ba-aad2-410f-8173-038fae3e11c8_r5 (4).jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\leave_attachments\3dcc64d5-fc7f-4682-8e61-398057fa77ba_pw.png'))">
       <SourceType>Package</SourceType>
       <SourceId>HR_Products</SourceId>
@@ -1457,6 +1673,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\leave_attachments\5fcdf181-8a85-46b5-902c-15b19f0c0d60_login.png'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\leave_attachments\8292b680-32db-4227-a4be-82b4bcf06e81_r5 (4).jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>HR_Products</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/HR_Products</BasePath>
+      <RelativePath>uploads/leave_attachments/8292b680-32db-4227-a4be-82b4bcf06e81_r5 (4).jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>7s5ne239zj</Fingerprint>
+      <Integrity>BwOJ1o3QTC0rQO/iCauOgD0ZHn4jTf8JDD5tWL5e0hU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\leave_attachments\8292b680-32db-4227-a4be-82b4bcf06e81_r5 (4).jpg'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\leave_attachments\8a74feb5-6343-4c34-99ba-f3d6b1cc8235_r5.jpg'))">
       <SourceType>Package</SourceType>
@@ -1529,6 +1763,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\leave_attachments\e298c870-bd33-4efc-ac19-1b25cbe44a66_r5.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\leave_attachments\fe3041c6-3599-477d-9677-b1cc5508b325_r5 (4) (2) (1).jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>HR_Products</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/HR_Products</BasePath>
+      <RelativePath>uploads/leave_attachments/fe3041c6-3599-477d-9677-b1cc5508b325_r5 (4) (2) (1).jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>7s5ne239zj</Fingerprint>
+      <Integrity>BwOJ1o3QTC0rQO/iCauOgD0ZHn4jTf8JDD5tWL5e0hU=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\leave_attachments\fe3041c6-3599-477d-9677-b1cc5508b325_r5 (4) (2) (1).jpg'))</OriginalItemSpec>
     </StaticWebAsset>
   </ItemGroup>
 </Project>

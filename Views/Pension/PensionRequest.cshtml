@@ -1,0 +1,154 @@
+﻿@model HR_Products.Models.Entitites.PensionRequest
+
+@{
+    ViewData["Title"] = "Pension Request";
+}
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">
+            <i class="fas fa-pension me-2"></i>Pension Request Form
+        </h4>
+    </div>
+    <div class="card-body">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <form asp-action="PensionRequest" method="post" id="pensionForm" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Employee ID</label>
+                    <input asp-for="EmpeId" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Employee Name</label>
+                    <input asp-for="EmpeName" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Request Date</label>
+                    <input asp-for="RequestDate" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Department</label>
+                    <input asp-for="Department" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Position</label>
+                    <input asp-for="Position" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Age</label>
+                    <input asp-for="Age" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Service Years</label>
+                    <input asp-for="ServiceYears" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Reason" class="form-label">Pension Reason *</label>
+                    <select asp-for="Reason" class="form-select" required>
+                        <option value="">-- Select Reason --</option>
+                        <option value="1">Age Pension (62 Years)</option>
+                        <option value="2">Service & Age Pension (Total 75)</option>
+                        <option value="3">Medical Pension</option>
+                        <option value="4">Service Length Pension (30 Years)</option>
+                    </select>
+                    <span asp-validation-for="Reason" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Approver</label>
+                    <input type="text" class="form-control" value="@Model.ApproverName" readonly />
+                    <input type="hidden" asp-for="ApprovedById" />
+                    <input type="hidden" asp-for="ApproverName" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Remarks" class="form-label">Remarks</label>
+                <textarea asp-for="Remarks" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Remarks" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Supporting Document (PDF, Word, JPG, PNG - max 5MB)</label>
+                <input type="file" name="file" class="form-control" required />
+                <span class="text-danger">@Html.ValidationMessage("file")</span>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                <button type="submit" class="btn btn-primary me-md-2" id="submitBtn">
+                    <i class="fas fa-paper-plane me-2"></i>Submit Request
+                </button>
+                <div class="form-group">
+                    <a class="btn btn-outline-warning btn-md" style="width: 100px;" href="javascript:history.back()" role="button">Back</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function() {
+            $('#pensionForm').on('submit', function() {
+                if ($(this).valid()) {
+                    $('#submitBtn').prop('disabled', true);
+                    $('#submitBtn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...');
+                }
+            });
+
+            $('select[name="Reason"]').on('change', function() {
+                const reason = parseInt($(this).val());
+                const age = parseInt($('#Age').val());
+                const serviceYears = parseInt($('#ServiceYears').val()) || 0;
+
+                if (reason === 1 && age < 62) {
+                    alert("You must be at least 62 years old for Age Pension");
+                    return false;
+                }
+                if (reason === 2 && (age + serviceYears) < 75) {
+                    alert("Your age + service years must total at least 75");
+                    return false;
+                }
+                if (reason === 4 && serviceYears < 30) {
+                    alert("You need at least 30 service years for Service Length Pension");
+                    return false;
+                }
+                return true;
+            });
+        });
+
+        function validateFile() {
+            const fileInput = document.querySelector('input[type="file"]');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('Please attach a pension document');
+                return false;
+            }
+            return true;
+        }
+    </script>
+}

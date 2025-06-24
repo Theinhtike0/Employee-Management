@@ -32,73 +32,120 @@ namespace HR_Products.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken] 
         public async Task<IActionResult> Create(LeaveType leavetype)
         {
             var existingLeaveType = await _context.LEAV_TYPE
                 .FirstOrDefaultAsync(lt => lt.LEAV_TYPE_NAME == leavetype.LEAV_TYPE_NAME);
 
             if (existingLeaveType != null)
-        {
-          ModelState.AddModelError("LEAV_TYPE_NAME", "A leave type with this name already exists.");
-          return View(leavetype); 
-        }
-
-        if (!ModelState.IsValid)
-        {
-          return View(leavetype);
-        }
-
-            leavetype.CreatedAt = DateTime.Now;
-            leavetype.UpdatedAt = DateTime.Now;
-
-            _context.LEAV_TYPE.Add(leavetype);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var leavetype = await _context.LEAV_TYPE.FindAsync(id);
-            if (leavetype == null)
             {
-                return NotFound();
+                ModelState.AddModelError("LEAV_TYPE_NAME", "A leave type with this name already exists.");
+                return View(leavetype);
             }
 
-            return View(leavetype);
-        }
+            leavetype.IS_PAID = (leavetype.IS_PAID == "Y") ? "Y" : "N";
+            leavetype.IS_ACTIVE = (leavetype.IS_ACTIVE == "Y") ? "Y" : "N";
+            leavetype.REQUIRE_APPROVAL = (leavetype.REQUIRE_APPROVAL == "Y") ? "Y" : "N";
+            leavetype.ATTACH_REQUIRE = (leavetype.ATTACH_REQUIRE == "Y") ? "Y" : "N";
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, LeaveType leavetype)
-        {
+
             if (!ModelState.IsValid)
             {
                 return View(leavetype);
             }
 
+            leavetype.CreatedAt = DateTime.Now;
+            leavetype.UpdatedAt = DateTime.Now; 
+
+            _context.LEAV_TYPE.Add(leavetype);
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Leave type created successfully!";
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                TempData["ErrorMessage"] = "Leave Type ID not provided.";
+                return RedirectToAction(nameof(Index));
+            }
+
             var leaveType = await _context.LEAV_TYPE.FindAsync(id);
             if (leaveType == null)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Leave Type not found.";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(leaveType);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, LeaveType leavetype) 
+        {
+            if (id != leavetype.LEAV_TYPE_ID)
+            {
+                TempData["ErrorMessage"] = "Mismatched Leave Type ID.";
+                return RedirectToAction(nameof(Index));
             }
 
-            leaveType.LEAV_TYPE_NAME = leavetype.LEAV_TYPE_NAME;
-            leaveType.DESCRIPTION = leavetype.DESCRIPTION;
-            leaveType.IS_PAID = leavetype.IS_PAID;
-            leaveType.DEFAULT_DAY_PER_YEAR = leavetype.DEFAULT_DAY_PER_YEAR;
-            leaveType.ACCRUAL_METHOD = leavetype.ACCRUAL_METHOD;
-            leaveType.CARRY_OVER_LIMIT = leavetype.CARRY_OVER_LIMIT;
-            leaveType.IS_ACTIVE = leavetype.IS_ACTIVE;
-            leaveType.REQUIRE_APPROVAL = leavetype.REQUIRE_APPROVAL;
-            leaveType.ATTACH_REQUIRE = leavetype.ATTACH_REQUIRE;
-            leaveType.GENDER_SPECIFIC = leavetype.GENDER_SPECIFIC;
-            leaveType.UpdatedAt = DateTime.Now;
+            
+            leavetype.IS_PAID = (leavetype.IS_PAID == "Y") ? "Y" : "N";
+            leavetype.IS_ACTIVE = (leavetype.IS_ACTIVE == "Y") ? "Y" : "N";
+            leavetype.REQUIRE_APPROVAL = (leavetype.REQUIRE_APPROVAL == "Y") ? "Y" : "N";
+            leavetype.ATTACH_REQUIRE = (leavetype.ATTACH_REQUIRE == "Y") ? "Y" : "N";
 
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return View(leavetype);
+            }
 
-            return RedirectToAction("Index");
+            var leaveTypeToUpdate = await _context.LEAV_TYPE.FindAsync(id);
+            if (leaveTypeToUpdate == null)
+            {
+                TempData["ErrorMessage"] = "Leave Type not found for update.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            leaveTypeToUpdate.LEAV_TYPE_NAME = leavetype.LEAV_TYPE_NAME;
+            leaveTypeToUpdate.DESCRIPTION = leavetype.DESCRIPTION;
+            leaveTypeToUpdate.IS_PAID = leavetype.IS_PAID; 
+            leaveTypeToUpdate.DEFAULT_DAY_PER_YEAR = leavetype.DEFAULT_DAY_PER_YEAR;
+            leaveTypeToUpdate.ACCRUAL_METHOD = leavetype.ACCRUAL_METHOD;
+            leaveTypeToUpdate.CARRY_OVER_LIMIT = leavetype.CARRY_OVER_LIMIT;
+            leaveTypeToUpdate.IS_ACTIVE = leavetype.IS_ACTIVE; 
+            leaveTypeToUpdate.REQUIRE_APPROVAL = leavetype.REQUIRE_APPROVAL; 
+            leaveTypeToUpdate.ATTACH_REQUIRE = leavetype.ATTACH_REQUIRE; 
+            leaveTypeToUpdate.GENDER_SPECIFIC = leavetype.GENDER_SPECIFIC;
+            leaveTypeToUpdate.UpdatedAt = DateTime.Now;
+
+            try
+            {
+                _context.Update(leaveTypeToUpdate); 
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Leave type updated successfully!";
+                return RedirectToAction("Index");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.LEAV_TYPE.Any(e => e.LEAV_TYPE_ID == id))
+                {
+                    TempData["ErrorMessage"] = "Leave type no longer exists.";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error updating leave type: {ex.Message}");
+                return View(leavetype); 
+            }
         }
 
         [HttpGet] 

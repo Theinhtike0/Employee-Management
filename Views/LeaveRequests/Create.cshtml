@@ -129,7 +129,7 @@
         $(document).ready(function () {
             function toggleAttachmentField() {
                 var leaveType = $('#leaveTypeSelect option:selected').text();
-                if (leaveType.includes('HL') || leaveType.includes('SL')) {
+                if (leaveType.includes('HL') || leaveType.includes('SL') || leaveType.includes('ML')) {
                     $('#attachmentGroup').show();
                     $('#AttachmentFile').attr('required', 'required');
                 } else {

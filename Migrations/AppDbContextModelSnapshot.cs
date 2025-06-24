@@ -82,9 +82,11 @@ namespace HR_Products.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("OriginalAccrualBalance")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("OriginalUsedToDate")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Reason")
@@ -202,8 +204,8 @@ namespace HR_Products.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("TerminateDate")
                         .HasColumnType("datetime2");
@@ -213,7 +215,9 @@ namespace HR_Products.Migrations
 
                     b.Property<string>("UserGuid")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.HasKey("EmpeId");
 
@@ -453,6 +457,123 @@ namespace HR_Products.Migrations
                     b.HasIndex("TYPE_ID");
 
                     b.ToTable("LEAV_SCHEME_TYPE_DETL");
+                });
+
+            modelBuilder.Entity("HR_Products.Models.Entitites.Payroll", b =>
+                {
+                    b.Property<int>("PayrollId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PayrollId"));
+
+                    b.Property<decimal>("Allowance")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("BasicSalary")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("Deductions")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("EmpeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EmpeName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("FrDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<decimal>("GrossPay")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("NetPay")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("OvertimeHours")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("PayDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("Tax")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("ToDate")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("PayrollId");
+
+                    b.HasIndex("EmpeId");
+
+                    b.ToTable("PAYROLLS");
+                });
+
+            modelBuilder.Entity("HR_Products.Models.Entitites.PensionRequest", b =>
+                {
+                    b.Property<int>("RequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestId"));
+
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ApprovalDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ApprovedById")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("EmpeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Position")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Reason")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remarks")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RequestDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("RequestId");
+
+                    b.HasIndex("ApprovedById");
+
+                    b.HasIndex("EmpeId");
+
+                    b.ToTable("PENSION");
                 });
 
             modelBuilder.Entity("HR_Products.Models.Users", b =>
@@ -733,6 +854,35 @@ namespace HR_Products.Migrations
                     b.Navigation("LEAV_SCHEME_TYPE");
                 });
 
+            modelBuilder.Entity("HR_Products.Models.Entitites.Payroll", b =>
+                {
+                    b.HasOne("HR_Products.Models.Entitites.EmployeeProfile", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmpeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("HR_Products.Models.Entitites.PensionRequest", b =>
+                {
+                    b.HasOne("HR_Products.Models.Entitites.EmployeeProfile", "Approver")
+                        .WithMany()
+                        .HasForeignKey("ApprovedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("HR_Products.Models.Entitites.EmployeeProfile", "EmployeeProfile")
+                        .WithMany("PensionRequests")
+                        .HasForeignKey("EmpeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Approver");
+
+                    b.Navigation("EmployeeProfile");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -782,6 +932,11 @@ namespace HR_Products.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HR_Products.Models.Entitites.EmployeeProfile", b =>
+                {
+                    b.Navigation("PensionRequests");
                 });
 
             modelBuilder.Entity("HR_Products.Models.Entitites.Leavescheme", b =>

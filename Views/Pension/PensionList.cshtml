@@ -1,0 +1,136 @@
+﻿@using System.IO
+@model PensionListViewModel
+
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-white border-bottom-0">
+            <h4 class="mb-0">
+                <i class="fas fa-file-alt me-2"></i>Pension Requests
+                <span class="badge bg-primary float-end">@Model.PensionRequests.Count() Total</span>
+            </h4>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Employee</th>
+                        <th>Department</th>
+                        <th>Position</th>
+                        <th>Age</th>
+                        <th>Service</th>
+                        <th>Reason</th>
+                        <th>Attachment</th>
+                        <th>Request Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var request in Model.PensionRequests)
+                    {
+                        <tr>
+                            <td>@request.EmpeName</td>
+                            <td>@request.Department</td>
+                            <td>@request.Position</td>
+                            <td>@request.Age</td>
+                            <td>@request.ServiceYears yrs</td>
+                            <td>@request.Reason.ToString().Replace("_", " ")</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(request.AttachFilePath))
+                                {
+                                    var fileName = System.IO.Path.GetFileName(request.AttachFilePath);
+                                    <a href="@Url.Action("DownloadPensionDocument", new { fileName = fileName })"
+                                       title="Click to download"
+                                       download>
+                                        <img src="@Url.Content($"~/pension-documents/{fileName}")"
+                                             alt="Pension Document"
+                                             style="max-width: 70px; max-height: 50px; cursor: pointer;" />
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span>No document</span>
+                                }
+                            </td>
+                            <td>@request.RequestDate.ToString("MM/dd/yyyy")</td>
+                            <td>
+                                <span class="badge @(request.Status == "Approved" ? "bg-success" :
+                                                    request.Status == "Rejected" ? "bg-danger" : "bg-warning")">
+                                    @request.Status
+                                </span>
+                            </td>
+                            <td>
+                                @if (Model.IsAdmin && request.Status == "Pending")
+                                {
+                                    <div class="d-flex gap-2">
+                                        <form asp-controller="Pension" asp-action="ApprovePensionRequest" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@request.RequestId" />
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-success">
+                                                <i class="fas fa-check"></i> Approve
+                                            </button>
+                                        </form>
+
+                                        <form asp-controller="Pension" asp-action="RejectPensionRequest" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@request.RequestId" />
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-times"></i> Reject
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Completed</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="form-group d-flex justify-content-end mt-3">
+        <a class="btn btn-outline-warning btn-md" style="width: 100px;" href="javascript:history.back()" role="button">Back</a>
+    </div>
+</div>
+
+<style>
+    .fa-file-pdf {
+        color: #d9534f;
+    }
+
+    .fa-file-word {
+        color: #2b579a;
+    }
+
+    .fa-file-image {
+        color: #5cb85c;
+    }
+
+    .fa-file-alt {
+        color: #6c757d;
+    }
+
+    .text-decoration-none {
+        text-decoration: none !important;
+    }
+
+    .table td, .table th {
+        vertical-align: middle;
+    }
+
+    a img[src*="/pension-documents/"] {
+        transition: all 0.3s ease;
+        border: 1px solid #ddd;
+        padding: 2px;
+    }
+
+    a:hover img[src*="/pension-documents/"] {
+        border-color: #007bff;
+        opacity: 0.8;
+    }
+</style>

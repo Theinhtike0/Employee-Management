@@ -1,8 +1,149 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "HR Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid">
+    <!-- Welcome Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="welcome-card p-4 rounded-3 shadow-sm">
+                <h1 class="display-5 fw-bold">Welcome, @User.Identity?.Name!</h1>
+                <p class="col-md-8 fs-4">HR Management System Overview</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modules Summary -->
+    <div class="row">
+        <!-- Leave Summary -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card summary-card h-100 shadow-sm border-start border-5 border-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title text-success">
+                                <i class="fas fa-umbrella-beach me-2"></i>Leave
+                            </h5>
+                            <div class="mt-3">
+                                <p class="mb-1"><strong>Available:</strong> 15 days</p>
+                                <p class="mb-1"><strong>Used:</strong> 5 days</p>
+                                <p class="mb-0"><strong>Pending:</strong> 2 requests</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payroll Summary -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card summary-card h-100 shadow-sm border-start border-5 border-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title text-primary">
+                                <i class="fas fa-money-bill-wave me-2"></i>Payroll
+                            </h5>
+                            <div class="mt-3">
+                                <p class="mb-1"><strong>Last Payment:</strong> $3,850</p>
+                                <p class="mb-1"><strong>Next Payment:</strong> Jun 30</p>
+                                <p class="mb-0"><strong>YTD Earnings:</strong> $23,100</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pension Summary -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card summary-card h-100 shadow-sm border-start border-5 border-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title text-warning">
+                                <i class="fas fa-piggy-bank me-2"></i>Pension
+                            </h5>
+                            <div class="mt-3">
+                                <p class="mb-1"><strong>Current Balance:</strong> $42,500</p>
+                                <p class="mb-1"><strong>Monthly Contribution:</strong> $850</p>
+                                <p class="mb-0"><strong>Vesting:</strong> 75%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance Summary -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card summary-card h-100 shadow-sm border-start border-5 border-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5 class="card-title text-info">
+                                <i class="fas fa-user-clock me-2"></i>Attendance
+                            </h5>
+                            <div class="mt-3">
+                                <p class="mb-1"><strong>This Month:</strong> 92%</p>
+                                <p class="mb-1"><strong>Late Arrivals:</strong> 2</p>
+                                <p class="mb-0"><strong>Overtime:</strong> 8 hours</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-umbrella-beach text-success me-2"></i>
+                                <span>Leave request approved for June 15-17</span>
+                            </div>
+                            <small class="text-muted">2 days ago</small>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-money-bill-wave text-primary me-2"></i>
+                                <span>June payroll processed</span>
+                            </div>
+                            <small class="text-muted">5 days ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Styles {
+    <style>
+        .welcome-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .summary-card {
+            transition: all 0.3s ease;
+        }
+
+            .summary-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+
+        .card-title i {
+            font-size: 1.2em;
+        }
+    </style>
+}

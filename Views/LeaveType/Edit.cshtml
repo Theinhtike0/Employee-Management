@@ -1,120 +1,85 @@
 ﻿@model HR_Products.Models.Entitites.LeaveType
+
 @{
     ViewData["Title"] = "Edit Leave Type";
 }
 
+<h4>Edit Leave Type</h4>
+<hr />
 <div class="row">
-    <div class="col-md-8 mx-auto rounded border p-3">
-        <h2 class="text-center mb-5">New Leave Type</h2>
-        <form method="post" enctype="multipart/form-data">
-            
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Leave Type</label>
-                <div class="col-sm-8">
-                    <input class="form-control" asp-for="LEAV_TYPE_NAME" required aria-required="true">
-                    <span asp-validation-for="LEAV_TYPE_NAME" class="text-danger small"></span>
-                </div>
+    <div class="col-md-6">
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="LEAV_TYPE_ID" />
+
+            <div class="form-group">
+                <label asp-for="LEAV_TYPE_NAME" class="control-label"></label>
+                <input asp-for="LEAV_TYPE_NAME" class="form-control" />
+                <span asp-validation-for="LEAV_TYPE_NAME" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DESCRIPTION" class="control-label"></label>
+                <input asp-for="DESCRIPTION" class="form-control" />
+                <span asp-validation-for="DESCRIPTION" class="text-danger"></span>
             </div>
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Description</label>
-                <div class="col-sm-8">
-                    <input class="form-control" asp-for="DESCRIPTION" required aria-required="true">
-                    <span asp-validation-for="DESCRIPTION" class="text-danger small"></span>
-                </div>
+            <div class="form-group form-check">
+                <input type="hidden" name="IS_PAID" value="N" /> 
+                <input class="form-check-input" type="checkbox" name="IS_PAID" value="Y" id="IS_PAID" @(Model.IS_PAID == "Y" ? "checked" : "") />
+                <label class="form-check-label" for="IS_PAID">Is Paid</label>
+                <span asp-validation-for="IS_PAID" class="text-danger"></span>
             </div>
 
-
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Is Paid</label>
-                <div class="col-sm-8">
-                    <select class="form-select" asp-for="IS_PAID" required aria-required="true">
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </select>
-                    <span asp-validation-for="IS_PAID" class="text-danger small"></span>
-                </div>
+            <div class="form-group">
+                <label asp-for="DEFAULT_DAY_PER_YEAR" class="control-label"></label>
+                <input asp-for="DEFAULT_DAY_PER_YEAR" class="form-control" />
+                <span asp-validation-for="DEFAULT_DAY_PER_YEAR" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ACCRUAL_METHOD" class="control-label"></label>
+                <input asp-for="ACCRUAL_METHOD" class="form-control" />
+                <span asp-validation-for="ACCRUAL_METHOD" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CARRY_OVER_LIMIT" class="control-label"></label>
+                <input asp-for="CARRY_OVER_LIMIT" class="form-control" />
+                <span asp-validation-for="CARRY_OVER_LIMIT" class="text-danger"></span>
             </div>
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Default Days </label>
-                <div class="col-sm-8">
-                    <input  class="form-control" asp-for="DEFAULT_DAY_PER_YEAR" required aria-required="true">
-                    <span asp-validation-for="DEFAULT_DAY_PER_YEAR" class="text-danger small"></span>
-                </div>
+            <div class="form-group form-check">
+                <input type="hidden" name="IS_ACTIVE" value="N" />
+                <input class="form-check-input" type="checkbox" name="IS_ACTIVE" value="Y" id="IS_ACTIVE" @(Model.IS_ACTIVE == "Y" ? "checked" : "") />
+                <label class="form-check-label" for="IS_ACTIVE">Is Active</label>
+                <span asp-validation-for="IS_ACTIVE" class="text-danger"></span>
             </div>
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Accrual Method</label>
-                <div class="col-sm-8">
-                    <input class="form-control" asp-for="ACCRUAL_METHOD">
-                    <span asp-validation-for="ACCRUAL_METHOD" class="text-danger small"></span>
-                </div>
+            <div class="form-group form-check">
+                <input type="hidden" name="REQUIRE_APPROVAL" value="N" />
+                <input class="form-check-input" type="checkbox" name="REQUIRE_APPROVAL" value="Y" id="REQUIRE_APPROVAL" @(Model.REQUIRE_APPROVAL == "Y" ? "checked" : "") />
+                <label class="form-check-label" for="REQUIRE_APPROVAL">Require Approval</label>
+                <span asp-validation-for="REQUIRE_APPROVAL" class="text-danger"></span>
             </div>
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Carry Limit</label>
-                <div class="col-sm-8">
-                    <input class="form-control" asp-for="CARRY_OVER_LIMIT">
-                    <span asp-validation-for="CARRY_OVER_LIMIT" class="text-danger small"></span>
-                </div>
+            <div class="form-group form-check">
+                <input type="hidden" name="ATTACH_REQUIRE" value="N" />
+                <input class="form-check-input" type="checkbox" name="ATTACH_REQUIRE" value="Y" id="ATTACH_REQUIRE" @(Model.ATTACH_REQUIRE == "Y" ? "checked" : "") />
+                <label class="form-check-label" for="ATTACH_REQUIRE">Attachment Required</label>
+                <span asp-validation-for="ATTACH_REQUIRE" class="text-danger"></span>
             </div>
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Is Active</label>
-                <div class="col-sm-8">
-                    <select class="form-select" asp-for="IS_ACTIVE" required aria-required="true">
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </select>
-                    <span asp-validation-for="IS_ACTIVE" class="text-danger small"></span>
-                </div>
+            <div class="form-group">
+                <label asp-for="GENDER_SPECIFIC" class="control-label"></label>
+                <input asp-for="GENDER_SPECIFIC" class="form-control" />
+                <span asp-validation-for="GENDER_SPECIFIC" class="text-danger"></span>
             </div>
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Approve Require</label>
-                <div class="col-sm-8">
-                    <select class="form-select" asp-for="REQUIRE_APPROVAL" required aria-required="true">
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </select>
-                    <span asp-validation-for="REQUIRE_APPROVAL" class="text-danger small"></span>
-                </div>
-            </div>
+            <input type="hidden" asp-for="CreatedAt" />
+            <input type="hidden" asp-for="UpdatedAt" />
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Attach Require</label>
-                <div class="col-sm-8">
-                    <select class="form-select" asp-for="ATTACH_REQUIRE" required aria-required="true">
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                    </select>
-                    <span asp-validation-for="ATTACH_REQUIRE" class="text-danger small"></span>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Gender Specific</label>
-                <div class="col-sm-8">
-                    <input class="form-control" asp-for="GENDER_SPECIFIC">
-                    <span asp-validation-for="GENDER_SPECIFIC" class="text-danger small"></span>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <label asp-for="CreatedAt" class="col-sm-4 col-form-label"></label>
-                <div class="col-sm-8">
-                    <input asp-for="CreatedAt" class="form-control-plaintext" readonly>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="offset-sm-4 col-sm-4 d-grid">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-                <div class="col-sm-4 d-grid">
-                    <a class="btn btn-outline-warning" asp-controller="LeaveType" asp-action="Index" role="button">Cancel</a>
-                </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="Save" class="btn btn-primary" /> |
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
             </div>
         </form>
     </div>

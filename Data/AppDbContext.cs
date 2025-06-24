@@ -22,6 +22,10 @@ namespace HR_Products.Data
         public DbSet<LeaveBalance> LEAV_BALANCE { get; set; }
         public DbSet<Holiday> HOLIDAYS { get; set; }
         public DbSet<LeaveRequest> LEAV_REQUESTS { get; set; }
+        public DbSet<Payroll> PAYROLLS { get; set; }
+
+        public DbSet<PensionRequest> PENSION { get; set; }
+
 
 
 
@@ -143,6 +147,83 @@ namespace HR_Products.Data
              .Property(e => e.UserGuid)
              .HasDefaultValueSql("NEWID()");
 
+
+            // Payroll Entity Configuration
+            modelBuilder.Entity<Payroll>(entity =>
+            {
+                entity.HasKey(p => p.PayrollId); // Correct primary key
+
+                entity.Property(p => p.EmpeId).IsRequired(); // Required foreign key
+
+                // Configure relationship if you have Employee entity
+                entity.HasOne(p => p.Employee)
+                      .WithMany()
+                      .HasForeignKey(p => p.EmpeId);
+
+                // Properties with Max Length
+                entity.Property(p => p.EmpeName)
+                    .HasMaxLength(100)
+                    .IsRequired();
+
+                entity.Property(p => p.Department)
+                    .HasMaxLength(100);
+
+                entity.Property(p => p.Position)
+                    .HasMaxLength(100);
+
+                // Decimal Precision (10,2) for financial fields
+                entity.Property(p => p.BasicSalary)
+                    .HasColumnType("decimal(10,2)");
+
+                entity.Property(p => p.Allowance)
+                    .HasColumnType("decimal(10,2)");
+
+                entity.Property(p => p.GrossPay)
+                    .HasColumnType("decimal(10,2)");
+
+                entity.Property(p => p.Tax)
+                    .HasColumnType("decimal(10,2)");
+
+                entity.Property(p => p.Deductions)
+                    .HasColumnType("decimal(10,2)");
+
+                entity.Property(p => p.NetPay)
+                    .HasColumnType("decimal(10,2)");
+
+                entity.Property(p => p.OvertimeHours)
+                    .HasColumnType("decimal(10,2)");
+
+                // Date Fields
+                entity.Property(p => p.FrDate)
+                    .HasColumnType("datetime");
+
+                entity.Property(p => p.ToDate)
+                    .HasColumnType("datetime");
+
+                entity.Property(p => p.PayDate)
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<LeaveRequest>()
+                .Property(l => l.OriginalAccrualBalance)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<LeaveRequest>()
+                .Property(l => l.OriginalUsedToDate)
+                .HasPrecision(18, 2);
+
+
+            modelBuilder.Entity<PensionRequest>()
+                   .HasOne(pr => pr.Approver)          
+                   .WithMany()                                   
+                   .HasForeignKey(pr => pr.ApprovedById) 
+                   .IsRequired(false)                  
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PensionRequest>()
+                .Property<string>("EmpeName");
+            modelBuilder.Entity<PensionRequest>()
+                .Property<string>("ApproverName");
 
         }
 
