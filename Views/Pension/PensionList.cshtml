@@ -20,11 +20,16 @@
                         <th>Position</th>
                         <th>Age</th>
                         <th>Service</th>
+                        <th>Service Year Bonus</th>
+                        <th>Pension Salary</th>
                         <th>Reason</th>
                         <th>Attachment</th>
                         <th>Request Date</th>
                         <th>Status</th>
-                        <th>Actions</th>
+                        @if (Model.ShowActionColumn)
+                        {
+                            <th>Action</th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
@@ -35,7 +40,9 @@
                             <td>@request.Department</td>
                             <td>@request.Position</td>
                             <td>@request.Age</td>
-                            <td>@request.ServiceYears yrs</td>
+                            <td>@request.ServiceYears</td>
+                            <td>@request.ServiceBonus</td>
+                            <td>@request.PensionSalary</td>
                             <td>@request.Reason.ToString().Replace("_", " ")</td>
                             <td>
                                 @if (!string.IsNullOrEmpty(request.AttachFilePath))
@@ -61,32 +68,35 @@
                                     @request.Status
                                 </span>
                             </td>
-                            <td>
-                                @if (Model.IsAdmin && request.Status == "Pending")
-                                {
-                                    <div class="d-flex gap-2">
-                                        <form asp-controller="Pension" asp-action="ApprovePensionRequest" method="post" class="d-inline">
-                                            <input type="hidden" name="id" value="@request.RequestId" />
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-sm btn-outline-success">
-                                                <i class="fas fa-check"></i> Approve
-                                            </button>
-                                        </form>
+                            @if (Model.ShowActionColumn)
+                            {
+                                <td>
+                                    @if (request.Status == "Pending")
+                                    {
+                                        <div class="d-flex gap-2">
+                                            <form asp-controller="Pension" asp-action="ApprovePensionRequest" method="post" class="d-inline">
+                                                <input type="hidden" name="id" value="@request.RequestId" />
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-outline-success">
+                                                    <i class="fas fa-check"></i> Approve
+                                                </button>
+                                            </form>
 
-                                        <form asp-controller="Pension" asp-action="RejectPensionRequest" method="post" class="d-inline">
-                                            <input type="hidden" name="id" value="@request.RequestId" />
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                <i class="fas fa-times"></i> Reject
-                                            </button>
-                                        </form>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <span class="text-muted small">Completed</span>
-                                }
-                            </td>
+                                            <form asp-controller="Pension" asp-action="RejectPensionRequest" method="post" class="d-inline">
+                                                <input type="hidden" name="id" value="@request.RequestId" />
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-times"></i> Reject
+                                                </button>
+                                            </form>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">Completed</span>
+                                    }
+                                </td>
+                            }
                         </tr>
                     }
                 </tbody>

@@ -1,34 +1,267 @@
-﻿
-<div class="container mt-4">
-    <h2>Manage Holidays</h2>
-    <a href="@Url.Action("Create")" class="btn btn-primary mb-3">Add Holiday</a>
+﻿@model IEnumerable<HR_Products.Models.Entitites.Holiday>
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Holiday Name</th>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var h in Model)
-            {
-                <tr>
-                    <td>@h.HolidayName</td>
-                    <td>@h.HolidayDate.ToString("yyyy-MM-dd")</td>
-                    <td>@h.Description</td>
-                    <td>
-                        <a href="@Url.Action("Delete", new { id = h.HolidayId })" class="btn btn-danger btn-sm">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <div class="mt-5 d-flex justify-content-start">
-        <a class="btn btn-outline-warning btn-md" style="width: 123px;" asp-controller="Admin" asp-action="Dashboard" role="button">Back</a>
+@{
+    ViewData["Title"] = "Manage Holidays";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0"><i class="bi bi-calendar-event"></i> Manage Holidays</h2>
+        </div>
+
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="btn-group">
+                    <a asp-action="Create" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Add New
+                    </a> &nbsp;
+                    <a asp-action="DownloadHolidayTemplate" class="btn btn-info">
+                        <i class="bi bi-file-earmark-excel"></i> Download Template
+                    </a>
+                </div>
+
+                <form id="importForm" asp-action="ImportHolidays" method="post" enctype="multipart/form-data" class="row g-2">
+                    @Html.AntiForgeryToken()
+                    <div class="col-auto">
+                        <div class="input-group">
+                            <input type="file" id="excelFile" name="excelFile" class="form-control" accept=".xlsx" required />
+                            <button type="submit" class="btn btn-primary" id="importBtn">
+                                <i class="bi bi-upload"></i> Import
+                            </button>
+                        </div>
+                        <small class="form-text text-muted">Only .xlsx files accepted (max 5MB)</small>
+                        <div id="fileError" class="invalid-feedback"></div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Alert Messages -->
+            <div id="alertContainer">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill"></i> @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill"></i> @TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @if (TempData["WarningMessage"] != null)
+                {
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-circle-fill"></i> @TempData["WarningMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @if (TempData["ImportErrors"] is List<string> errors && errors.Any())
+                {
+                    <div class="alert alert-warning alert-dismissible fade show">
+                        <h5><i class="bi bi-exclamation-triangle"></i> Import Issues</h5>
+                        <ul>
+                            @foreach (var error in errors.Take(10))
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                        @if (errors.Count > 10)
+                        {
+                            <p>... and @(errors.Count - 10) more issues</p>
+                        }
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Holiday Name</th>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var holiday in Model)
+                        {
+                            <tr>
+                                <td>@holiday.HolidayId</td>
+                                <td>@holiday.HolidayName</td>
+                                <td>@holiday.HolidayDate.ToString("yyyy-MM-dd")</td>
+                                <td>@holiday.Description</td>
+                                <td>@holiday.CreatedAt.ToString("yyyy-MM-dd")</td>
+                                <td>
+                                    <form asp-action="Delete" method="post" onsubmit="return confirm('Are you sure you want to delete this holiday?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@holiday.HolidayId" />
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
     </div>
 </div>
 
+@section Styles {
+    <style>
+        .table th {
+            white-space: nowrap;
+        }
 
+        .table td {
+            vertical-align: middle;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        #importForm .is-invalid {
+            border-color: #dc3545;
+        }
+
+        #importForm .is-valid {
+            border-color: #28a745;
+        }
+
+        #progressBar {
+            height: 5px;
+            margin-top: 5px;
+        }
+    </style>
+}
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script>
+        $(document).ready(function() {
+            // Auto-dismiss alerts after 5 seconds
+            setTimeout(function() {
+                $('.alert').alert('close');
+            }, 5000);
+
+            // Tooltip initialization
+            $('[data-bs-toggle="tooltip"]').tooltip();
+
+            // File input change handler
+            $('#excelFile').on('change', function() {
+                validateFile();
+            });
+
+            // Form submission handler
+            $('#importForm').on('submit', function(e) {
+                if (!validateFile()) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Show loading state
+                const btn = $('#importBtn');
+                btn.prop('disabled', true);
+                btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Importing...');
+
+                // Submit form via AJAX
+                const formData = new FormData(this);
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        // Reload the page to show updated data and messages
+                        window.location.reload();
+                    },
+                    error: function(xhr) {
+                        showAlert('An error occurred during import: ' +
+                            (xhr.responseJSON?.message || xhr.statusText), 'danger');
+                        btn.prop('disabled', false);
+                        btn.html('<i class="bi bi-upload"></i> Import');
+                    }
+                });
+
+                return false; // Prevent normal form submission
+            });
+
+            // File validation function
+            function validateFile() {
+                const fileInput = $('#excelFile')[0];
+                const fileError = $('#fileError');
+                let isValid = true;
+
+                if (fileInput.files.length === 0) {
+                    fileError.text('Please select a file');
+                    isValid = false;
+                } else {
+                    const file = fileInput.files[0];
+                    const extension = file.name.split('.').pop().toLowerCase();
+
+                    if (extension !== 'xlsx') {
+                        fileError.text('Only .xlsx files are allowed');
+                        isValid = false;
+                    } else if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                        fileError.text('File size must be less than 5MB');
+                        isValid = false;
+                    } else {
+                        fileError.text('');
+                    }
+                }
+
+                // Toggle validation classes
+                if (isValid) {
+                    fileInput.classList.remove('is-invalid');
+                    fileInput.classList.add('is-valid');
+                } else {
+                    fileInput.classList.remove('is-valid');
+                    fileInput.classList.add('is-invalid');
+                }
+
+                return isValid;
+            }
+
+            // Helper function to show alerts
+            function showAlert(message, type) {
+                const alert = $(`
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        <i class="bi ${type === 'danger' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill'}"></i>
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `);
+
+                $('#alertContainer').prepend(alert);
+
+                // Auto-dismiss after 5 seconds
+                setTimeout(function() {
+                    alert.alert('close');
+                }, 5000);
+            }
+        });
+    </script>
+}

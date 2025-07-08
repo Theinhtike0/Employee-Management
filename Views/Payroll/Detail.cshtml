@@ -1,95 +1,128 @@
-﻿@model HR_Products.Models.Entitites.Payroll
+﻿@model HR_Products.ViewModels.PayrollDetailViewModel
 
 @{
-    ViewData["Title"] = "Payroll Details List";
+    ViewData["Title"] = "Payroll Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h4>Payroll Details</h4>
 <hr />
-
 <div>
     <dl class="row">
-        <dt class="col-sm-2">
-            Employee Name
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.EmpeName)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.EmpeName)
         </dd>
-        <dt class="col-sm-2">
-            Department
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Department)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Department)
         </dd>
-        <dt class="col-sm-2">
-            Position
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Position)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Position)
         </dd>
-        <dt class="col-sm-2">
-            Basic Salary
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.BasicSalary)
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BasicSalary)
+        <dd class="col-sm-9">
+            @Model.BasicSalary.ToString("C")
         </dd>
-        <dt class="col-sm-2">
-            Allowance
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Allowance)
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Allowance)
+        <dd class="col-sm-9">
+            @Model.Allowance.ToString("C")
         </dd>
-        <dt class="col-sm-2">
-            Overtime Hours
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.OvertimeHours)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.OvertimeHours)
         </dd>
-        <dt class="col-sm-2">
-            Tax
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Tax)
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Tax)
+        <dd class="col-sm-9">
+            @Model.Tax.ToString("C")
         </dd>
-        <dt class="col-sm-2">
-            Deductions
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Deductions)
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Deductions)
+        <dd class="col-sm-9">
+            @Model.Deductions.ToString("C")
         </dd>
-        <dt class="col-sm-2">
-            Gross Pay
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.GrossPay)
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.GrossPay)
+        <dd class="col-sm-9">
+            @Model.GrossPay.ToString("C")
         </dd>
-        <dt class="col-sm-2">
-            Net Pay
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.MedicalLeaveDeduction)
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NetPay)
+        <dd class="col-sm-9">
+            @Model.MedicalLeaveDeduction.ToString("C")
         </dd>
-        <dt class="col-sm-2">
-            From Date
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.UnpaidLeaveDeduction)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
+            @Model.UnpaidLeaveDeduction.ToString("C")
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ServiceLeaveDeduction)
+        </dt>
+        <dd class="col-sm-9">
+            @Model.ServiceLeaveDeduction.ToString("C")
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.NetPay)
+        </dt>
+        <dd class="col-sm-9">
+            @Model.NetPay.ToString("C")
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.FrDate)
+        </dt>
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.FrDate)
         </dd>
-        <dt class="col-sm-2">
-            To Date
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ToDate)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.ToDate)
         </dd>
-        <dt class="col-sm-2">
-            Pay Date
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.PayDate)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-9">
             @Html.DisplayFor(model => model.PayDate)
         </dd>
     </dl>
 </div>
-<div class="mt-3">
-    <a asp-action="Edit" asp-route-id="@Model.PayrollId" class="btn btn-warning">Edit</a> |
-    <a class="btn btn-outline-warning btn-md" style="width: 100px;" href="javascript:history.back()" role="button">Back</a>
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.PayrollId" class="btn btn-primary">Edit</a>
 </div>

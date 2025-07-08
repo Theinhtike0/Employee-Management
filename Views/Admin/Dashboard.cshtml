@@ -49,6 +49,14 @@
             </div>
 
             <div class="menu-section">
+                <button class="menu-toggle">Resignation <i class="fas fa-chevron-down toggle-icon"></i></button>
+                <ul class="submenu">
+                    <li><a asp-controller="ServiceBonus" asp-action="RequestBonus" class="nav-link"> <i class="fas fa-chart-bar me-1"></i>Exit Form</a></li>
+                    <li><a asp-controller="ServiceBonus" asp-action="ManageRequests" class="nav-link"> <i class="fas fa-chart-bar me-1"></i>Exit Approval Form</a></li>
+                </ul>
+            </div>
+
+            <div class="menu-section">
                 <button class="menu-toggle">Report <i class="fas fa-chevron-down toggle-icon"></i></button>
                 <ul class="submenu">
                     <li><a asp-controller="Payroll" asp-action="Report"><i class="fas fa-list me-1"></i>Leave & Payroll Report</a></li>

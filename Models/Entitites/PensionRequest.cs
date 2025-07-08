@@ -25,6 +25,10 @@ namespace HR_Products.Models.Entitites
 
         public int? ServiceYears { get; set; }
 
+        public decimal ServiceBonus { get; set; }
+
+        public decimal PensionSalary { get; set; }
+
         [ForeignKey("ApprovedById")]
         public virtual EmployeeProfile? Approver { get; set; }
 
@@ -86,5 +90,6 @@ namespace HR_Products.Models.Entitites
 
         [Display(Name = "Service Length Pension (30 Years)")]
         Service_Length_Pension_30_Years = 4
+
     }
 }

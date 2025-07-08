@@ -12,18 +12,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using HR_Products.Services;
 
 namespace HR_Products.Controllers
 {
     public class LeaveRequestsController : Controller
     {
         private readonly IWebHostEnvironment _hostEnvironment;
-        private readonly AppDbContext _context; 
+        private readonly AppDbContext _context;
+        private readonly IEmailService _emailService; // Declare IEmailService
 
-        public LeaveRequestsController(IWebHostEnvironment hostEnvironment, AppDbContext context)
+
+        public LeaveRequestsController(IWebHostEnvironment hostEnvironment, AppDbContext context, IEmailService emailService)
         {
             _hostEnvironment = hostEnvironment;
             _context = context;
+            _emailService = emailService;
         }
 
 
@@ -228,10 +232,8 @@ namespace HR_Products.Controllers
         {
             try
             {
-                // Get current year
                 int currentYear = DateTime.Now.Year;
 
-                // Validate leave type
                 var leaveType = await _context.LEAV_TYPE
                     .FirstOrDefaultAsync(lt => lt.LEAV_TYPE_ID == viewModel.LeaveTypeId);
 
@@ -242,10 +244,9 @@ namespace HR_Products.Controllers
                     return HandleResponse(View(viewModel));
                 }
 
-                // Validate attachment
                 if (viewModel.AttachmentFile != null)
                 {
-                    if (viewModel.AttachmentFile.Length > 5 * 1024 * 1024) // 5MB
+                    if (viewModel.AttachmentFile.Length > 5 * 1024 * 1024)
                     {
                         ModelState.AddModelError("AttachmentFile", "File size must be less than 5MB");
                         await PopulateViewBags();
@@ -262,7 +263,6 @@ namespace HR_Products.Controllers
                     }
                 }
 
-                // Validate approver for non-CL leave types
                 if (leaveType.LEAV_TYPE_NAME != "CL" && (viewModel.ApprovedById == null || viewModel.ApprovedById == 0))
                 {
                     ModelState.AddModelError("", "No approver was assigned for this leave type");
@@ -270,7 +270,6 @@ namespace HR_Products.Controllers
                     return HandleResponse(View(viewModel));
                 }
 
-                // Validate employee
                 var employee = await _context.EMPE_PROFILE
                     .FirstOrDefaultAsync(e => e.EmpeId == viewModel.EmployeeId);
 
@@ -308,7 +307,6 @@ namespace HR_Products.Controllers
 
                 viewModel.Duration = CalculateDuration(viewModel.StartDate, viewModel.EndDate, viewModel.DurationType);
 
-               
                 var currentUsedDays = await _context.LEAV_REQUESTS
                     .Where(lr => lr.EmployeeId == viewModel.EmployeeId
                                 && lr.LeaveTypeId == viewModel.LeaveTypeId
@@ -339,7 +337,6 @@ namespace HR_Products.Controllers
                 }
 
                 string attachmentPath = null;
-                byte[] attachmentFileData = null;
 
                 if (viewModel.AttachmentFile != null && viewModel.AttachmentFile.Length > 0)
                 {
@@ -370,7 +367,6 @@ namespace HR_Products.Controllers
                 var status = isAutoApproved ? "Approved" : "Pending";
                 var approverName = isAutoApproved ? "Auto-Approved" : viewModel.ApproverName;
 
-             
                 var leaveRequest = new LeaveRequest
                 {
                     EmployeeId = viewModel.EmployeeId,
@@ -397,12 +393,12 @@ namespace HR_Products.Controllers
                     AttachmentFileName = viewModel.AttachmentFile?.FileName,
                     AttachmentContentType = viewModel.AttachmentFile?.ContentType,
                     AttachmentPath = attachmentPath,
-                    AttachmentFileData = attachmentFileData
+                    AttachmentFileData = null
                 };
 
                 _context.LEAV_REQUESTS.Add(leaveRequest);
 
-                if (leaveBalance != null) 
+                if (leaveBalance != null)
                 {
                     leaveBalance.Balance = (int)(leaveBalance.Balance - viewModel.Duration);
                 }
@@ -410,18 +406,73 @@ namespace HR_Products.Controllers
                 {
                     var newBalance = new LeaveBalance
                     {
-                        EmpeId = viewModel.EmployeeId, 
+                        EmpeId = viewModel.EmployeeId,
                         LeaveTypeId = viewModel.LeaveTypeId,
-                        Balance = (int)(leaveType.DEFAULT_DAY_PER_YEAR - viewModel.Duration), 
+                        Balance = (int)(leaveType.DEFAULT_DAY_PER_YEAR - viewModel.Duration),
                         Year = currentYear,
-                        EmpeName = employee.EmpeName, 
-                        LeaveTypeName = leaveType.LEAV_TYPE_NAME, 
+                        EmpeName = employee.EmpeName,
+                        LeaveTypeName = leaveType.LEAV_TYPE_NAME,
                         CreatedDate = DateTime.Now
                     };
-
-                    _context.LEAV_BALANCE.Add(newBalance); 
+                    _context.LEAV_BALANCE.Add(newBalance);
                 }
                 await _context.SaveChangesAsync();
+
+                if (!isAutoApproved && viewModel.ApprovedById.HasValue && viewModel.ApprovedById.Value > 0)
+                {
+                    var approver = await _context.EMPE_PROFILE
+                                        .FirstOrDefaultAsync(e => e.EmpeId == viewModel.ApprovedById.Value);
+
+                    if (approver != null && !string.IsNullOrEmpty(approver.Email))
+                    {
+                        string recipientEmail = approver.Email;
+                        string subject = $"New Leave Request for Your Approval - {employee.EmpeName}";
+                        string message = $"Dear {approver.EmpeName},<br/><br/>" +
+                                         $"A new leave request has been submitted by <b>{employee.EmpeName}</b> ({employee.Email}).<br/><br/>" +
+                                         $"<b>Leave Type:</b> {leaveType.LEAV_TYPE_NAME}<br/>" +
+                                         $"<b>Start Date:</b> {viewModel.StartDate.ToString("MM/dd/yyyy")}<br/>" +
+                                         $"<b>End Date:</b> {viewModel.EndDate.ToString("MM/dd/yyyy")}<br/>" +
+                                         $"<b>Duration:</b> {viewModel.Duration} {viewModel.DurationType}<br/>" +
+                                         $"<b>Reason:</b> {viewModel.Reason}<br/><br/>" +
+                                         $"Please log in to the system to review and approve/reject this request.<br/><br/>" +
+                                         $"Best regards,<br/>" +
+                                         $"HR Products System";
+
+                        string senderEmailFromProfile = employee.Email;
+                        string senderNameFromProfile = employee.EmpeName; 
+
+                        try
+                        {
+                             await _emailService.SendEmailAsync(recipientEmail, subject, message, senderEmailFromProfile, senderNameFromProfile);
+                            TempData["SuccessMessage"] += " Email notification sent to approver!";
+                        }
+                        catch (Exception emailEx)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Failed to send leave request notification email to {recipientEmail}: {emailEx.Message}");
+                            TempData["WarningMessage"] = TempData["WarningMessage"] + (string.IsNullOrEmpty(TempData["WarningMessage"] as string) ? "" : " ") + "Email notification to approver failed.";
+                        }
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Approver email not found or empty for EmpeId: {viewModel.ApprovedById}. Email notification skipped.");
+                        TempData["WarningMessage"] = TempData["WarningMessage"] + (string.IsNullOrEmpty(TempData["WarningMessage"] as string) ? "" : " ") + "Approver email not found for notification.";
+                    }
+                }
+                else if (isAutoApproved)
+                {
+                    if (employee != null && !string.IsNullOrEmpty(employee.Email))
+                    {
+                        string recipientEmail = employee.Email;
+                        string subject = $"Leave Request Auto-Approved - {leaveType.LEAV_TYPE_NAME}";
+                        string message = $"Dear {employee.EmpeName},<br/><br/>" +
+                                         $"Your leave request ({leaveType.LEAV_TYPE_NAME} from {viewModel.StartDate.ToString("MM/dd/yyyy")} to {viewModel.EndDate.ToString("MM/dd/yyyy")}) has been **automatically approved**.<br/><br/>" +
+                                         $"Best regards,<br/>" +
+                                         $"HR Products System";
+
+                        await _emailService.SendEmailAsync(recipientEmail, subject, message, null, "HR Products System"); // No dynamic reply-to, uses system default
+                        TempData["SuccessMessage"] += " Auto-approval email sent to employee!";
+                    }
+                }
 
                 TempData["SuccessMessage"] = $"Leave request submitted successfully!";
                 return HandleResponse(RedirectToAction("Create"), status);
@@ -429,6 +480,7 @@ namespace HR_Products.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"An error occurred while saving the leave request: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error saving leave request: {ex.Message}");
                 await PopulateViewBags();
                 return HandleResponse(View(viewModel), "Error");
             }

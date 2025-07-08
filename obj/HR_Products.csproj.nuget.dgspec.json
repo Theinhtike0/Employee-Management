@@ -50,9 +50,17 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.105.0, )"
+            },
             "DocX": {
               "target": "Package",
               "version": "[4.0.25105.5786, )"
+            },
+            "EPPlus": {
+              "target": "Package",
+              "version": "[5.8.8, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",

@@ -5,6 +5,14 @@
       "PackagePath": "staticwebassets\\HR_Products.k65ctz2rfp.bundle.scp.css"
     },
     {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\Format\\HolidayImportTemplate.xlsx",
+      "PackagePath": "staticwebassets\\Format\\HolidayImportTemplate.xlsx"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\Format\\PayrollData.xlsx",
+      "PackagePath": "staticwebassets\\Format\\PayrollData.xlsx"
+    },
+    {
       "Id": "E:\\CSharp\\HR_Products\\wwwroot\\css\\account.css",
       "PackagePath": "staticwebassets\\css\\account.css"
     },
@@ -317,6 +325,14 @@
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\pension-documents\\04e88892-5f8e-4148-9b87-e64b96c7e67f.jpg",
+      "PackagePath": "staticwebassets\\pension-documents\\04e88892-5f8e-4148-9b87-e64b96c7e67f.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\pension-documents\\42b4e50f-e66f-45d3-a4ff-5dbbbcfac3f5.jpg",
+      "PackagePath": "staticwebassets\\pension-documents\\42b4e50f-e66f-45d3-a4ff-5dbbbcfac3f5.jpg"
+    },
+    {
       "Id": "E:\\CSharp\\HR_Products\\wwwroot\\pension-documents\\5328e9cb-1540-4f49-b124-46f275827d61.jpg",
       "PackagePath": "staticwebassets\\pension-documents\\5328e9cb-1540-4f49-b124-46f275827d61.jpg"
     },
@@ -325,12 +341,28 @@
       "PackagePath": "staticwebassets\\pension-documents\\6f9d08e5-d9d7-409b-9313-25a430671824.jpg"
     },
     {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\pension-documents\\79b7d8b0-5760-4d70-860f-65b70d43cc7c.jpg",
+      "PackagePath": "staticwebassets\\pension-documents\\79b7d8b0-5760-4d70-860f-65b70d43cc7c.jpg"
+    },
+    {
       "Id": "E:\\CSharp\\HR_Products\\wwwroot\\pension-documents\\9500222e-297e-49cb-b27e-9af91b369853.jpg",
       "PackagePath": "staticwebassets\\pension-documents\\9500222e-297e-49cb-b27e-9af91b369853.jpg"
     },
     {
       "Id": "E:\\CSharp\\HR_Products\\wwwroot\\pension-documents\\9f04c5ce-f8b3-4d94-865b-4f41fbdf7a7e.jpg",
       "PackagePath": "staticwebassets\\pension-documents\\9f04c5ce-f8b3-4d94-865b-4f41fbdf7a7e.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\pension-documents\\a35cca3b-6b31-45a3-95fa-8122000f77cb.jpg",
+      "PackagePath": "staticwebassets\\pension-documents\\a35cca3b-6b31-45a3-95fa-8122000f77cb.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\pension-documents\\a3840950-3104-4c3a-b33f-8b8e97e7ca39.jpg",
+      "PackagePath": "staticwebassets\\pension-documents\\a3840950-3104-4c3a-b33f-8b8e97e7ca39.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\pension-documents\\a4c8df20-7f0c-493e-997a-44fe88b08ba5.jpg",
+      "PackagePath": "staticwebassets\\pension-documents\\a4c8df20-7f0c-493e-997a-44fe88b08ba5.jpg"
     },
     {
       "Id": "E:\\CSharp\\HR_Products\\wwwroot\\pension-documents\\ac495de1-2d3d-46a0-b4e5-8be61bb1dc69_r5 (4) (2).jpg",
@@ -345,8 +377,16 @@
       "PackagePath": "staticwebassets\\pension-documents\\e1bbf185-4f69-4a9f-b4ec-e620020270df.jpg"
     },
     {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\pension-documents\\e2ca7a99-610c-4b32-a1c6-10d7d096e677.jpg",
+      "PackagePath": "staticwebassets\\pension-documents\\e2ca7a99-610c-4b32-a1c6-10d7d096e677.jpg"
+    },
+    {
       "Id": "E:\\CSharp\\HR_Products\\wwwroot\\pension-documents\\ed6eff46-80a8-415d-9d23-625aceb61841.jpg",
       "PackagePath": "staticwebassets\\pension-documents\\ed6eff46-80a8-415d-9d23-625aceb61841.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\pension-documents\\f04432a5-67b6-4d59-b990-a37ae1a5abd7.jpg",
+      "PackagePath": "staticwebassets\\pension-documents\\f04432a5-67b6-4d59-b990-a37ae1a5abd7.jpg"
     },
     {
       "Id": "E:\\CSharp\\HR_Products\\wwwroot\\pension-documents\\ffdca068-7566-45dc-ab38-4a3f351aaaeb.jpg",
@@ -387,6 +427,10 @@
     {
       "Id": "E:\\CSharp\\HR_Products\\wwwroot\\uploads\\leave_attachments\\b10f0c27-451c-495d-b8e3-9fac03942b27_r1.jpg",
       "PackagePath": "staticwebassets\\uploads\\leave_attachments\\b10f0c27-451c-495d-b8e3-9fac03942b27_r1.jpg"
+    },
+    {
+      "Id": "E:\\CSharp\\HR_Products\\wwwroot\\uploads\\leave_attachments\\d8883701-0f48-4d47-9867-7c377cbac260_r5 (4) (2).jpg",
+      "PackagePath": "staticwebassets\\uploads\\leave_attachments\\d8883701-0f48-4d47-9867-7c377cbac260_r5 (4) (2).jpg"
     },
     {
       "Id": "E:\\CSharp\\HR_Products\\wwwroot\\uploads\\leave_attachments\\e298c870-bd33-4efc-ac19-1b25cbe44a66_r5.jpg",

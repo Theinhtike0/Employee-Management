@@ -10,10 +10,9 @@ namespace HR_Products.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            // Constructor remains unchanged
+           
         }
 
-        // DbSet definitions for your custom entities
         public DbSet<EmployeeProfile> EMPE_PROFILE { get; set; }
         public DbSet<LeaveType> LEAV_TYPE { get; set; }
         public DbSet<Leavescheme> LEAV_SCHEME { get; set; }
@@ -25,6 +24,8 @@ namespace HR_Products.Data
         public DbSet<Payroll> PAYROLLS { get; set; }
 
         public DbSet<PensionRequest> PENSION { get; set; }
+
+        public DbSet<ServiceBonusRequest> SERVICE_BONUS { get; set; }
 
 
 

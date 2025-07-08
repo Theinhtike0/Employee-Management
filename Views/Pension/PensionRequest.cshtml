@@ -37,7 +37,19 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Employee Name</label>
-                    <input asp-for="EmpeName" class="form-control" readonly />
+                    @if (ViewBag.IsAdmin)
+                    {
+                        <select asp-for="EmpeName" class="form-select" id="employeeDropdown">
+                            @foreach (var employee in ViewBag.Employees)
+                            {
+                                <option value="@employee.Value" selected="@(employee.Value == Model.EmpeId.ToString())">@employee.Text</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <input asp-for="EmpeName" class="form-control" readonly />
+                    }
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Request Date</label>
@@ -66,9 +78,20 @@
                     <input asp-for="ServiceYears" class="form-control" readonly />
                 </div>
                 <div class="col-md-4">
+                    <label class="form-label">Service Year Bonus</label>
+                    <input asp-for="ServiceBonus" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Pension Salary</label>
+                    <input asp-for="PensionSalary" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
                     <label asp-for="Reason" class="form-label">Pension Reason *</label>
-                    <select asp-for="Reason" class="form-select" required>
-                        <option value="">-- Select Reason --</option>
+                    <select asp-for="Reason" class="form-select" required id="pensionReason">
+                        <option value="">Select Reason</option>
                         <option value="1">Age Pension (62 Years)</option>
                         <option value="2">Service & Age Pension (Total 75)</option>
                         <option value="3">Medical Pension</option>
@@ -81,6 +104,10 @@
                     <input type="text" class="form-control" value="@Model.ApproverName" readonly />
                     <input type="hidden" asp-for="ApprovedById" />
                     <input type="hidden" asp-for="ApproverName" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Basic Salary</label>
+                    <input type="text" class="form-control" id="basicSalary" readonly />
                 </div>
             </div>
 
@@ -114,6 +141,9 @@
     }
     <script>
         $(document).ready(function() {
+            // Get basic salary when page loads (you'll need to implement this endpoint)
+            getBasicSalary();
+
             $('#pensionForm').on('submit', function() {
                 if ($(this).valid()) {
                     $('#submitBtn').prop('disabled', true);
@@ -121,11 +151,13 @@
                 }
             });
 
-            $('select[name="Reason"]').on('change', function() {
+            $('#pensionReason').on('change', function() {
                 const reason = parseInt($(this).val());
                 const age = parseInt($('#Age').val());
                 const serviceYears = parseInt($('#ServiceYears').val()) || 0;
+                const basicSalary = parseFloat($('#basicSalary').val()) || 0;
 
+                // Validate pension reason requirements
                 if (reason === 1 && age < 62) {
                     alert("You must be at least 62 years old for Age Pension");
                     return false;
@@ -138,9 +170,38 @@
                     alert("You need at least 30 service years for Service Length Pension");
                     return false;
                 }
+
+                // Calculate and display benefits if basic salary is available
+                if (basicSalary > 0 && serviceYears > 0) {
+                    const serviceBonus = serviceYears * basicSalary * 0.5; // 50%
+                    const pensionSalary = serviceYears * basicSalary * 0.015; // 1.5%
+
+                    $('#ServiceBonus').val(serviceBonus.toFixed(2));
+                    $('#PensionSalary').val(pensionSalary.toFixed(2));
+                }
+
                 return true;
             });
         });
+
+           function getBasicSalary() {
+            $.get('/Pension/GetBasicSalary', function(data) {
+                if (data && data.basicSalary) {
+                    $('#basicSalary').val(data.basicSalary);
+
+                    const serviceYears = parseInt($('#ServiceYears').val()) || 0;
+                    if (serviceYears > 0) {
+                        const serviceBonus = serviceYears * data.basicSalary * 0.5;
+                        const pensionSalary = serviceYears * data.basicSalary * 0.015;
+
+                        $('#ServiceBonus').val(serviceBonus.toFixed(2));
+                        $('#PensionSalary').val(pensionSalary.toFixed(2));
+                    }
+                }
+            }).fail(function() {
+                console.error('Failed to get basic salary');
+            });
+        }
 
         function validateFile() {
             const fileInput = document.querySelector('input[type="file"]');

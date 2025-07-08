@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using System.Text; // Required for StringBuilder (if any other parts use it)
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using System.Security.Claims;
@@ -14,33 +14,27 @@ using System.Collections.Generic;
 using System.IO;
 using Xceed.Words.NET;
 using System.Drawing;
+using OfficeOpenXml;
+
 namespace HR_Products.Controllers
 {
     public class PayrollController : Controller
     {
         private readonly AppDbContext _context;
-        private readonly IWebHostEnvironment _hostingEnvironment; 
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
         public PayrollController(AppDbContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
-            _hostingEnvironment = hostingEnvironment; 
+            _hostingEnvironment = hostingEnvironment;
         }
 
-        public async Task<IActionResult> Index()
+        public class PayrollCalculationResult
         {
-            try
-            {
-                var payroll = await _context.PAYROLLS
-                    .Include(p => p.Employee)
-                    .ToListAsync();
-
-                return View(payroll);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An error occurred while retrieving payroll data.");
-            }
+            public decimal NetPay { get; set; }
+            public decimal MedicalLeaveDeduction { get; set; }
+            public decimal UnpaidLeaveDeduction { get; set; }
+            public decimal ServiceLeaveDeduction { get; set; }
         }
 
         private EmployeeProfile GetCurrentUser()
@@ -59,21 +53,77 @@ namespace HR_Products.Controllers
             if (employee == null)
             {
                 System.Diagnostics.Debug.WriteLine($"No employee found for email: {userEmail}");
-                }
+                throw new InvalidOperationException($"Employee not found for email: {userEmail}");
+            }
 
             return employee;
+        }
+
+
+        public async Task<IActionResult> Index()
+        {
+            try
+            {
+                var payrolls = await _context.PAYROLLS
+                    .Include(p => p.Employee)
+                    .ToListAsync();
+
+                var payrollViewModels = new List<PayrollDetailViewModel>();
+
+                foreach (var payroll in payrolls)
+                {
+                    var calculationResult = await CalculateDeductionsAndNetPay(
+                        payroll.EmpeId,
+                        payroll.BasicSalary,
+                        payroll.Allowance,
+                        payroll.Tax,
+                        payroll.OvertimeHours,
+                        payroll.Deductions,
+                        payroll.FrDate,
+                        payroll.ToDate);
+
+                    payrollViewModels.Add(new PayrollDetailViewModel
+                    {
+                        PayrollId = payroll.PayrollId,
+                        EmpeId = payroll.EmpeId,
+                        EmpeName = payroll.EmpeName,
+                        Department = payroll.Department,
+                        Position = payroll.Position,
+                        BasicSalary = payroll.BasicSalary,
+                        Allowance = payroll.Allowance,
+                        OvertimeHours = payroll.OvertimeHours,
+                        Tax = payroll.Tax,
+                        Deductions = payroll.Deductions,
+                        GrossPay = payroll.GrossPay,
+                        NetPay = calculationResult.NetPay,
+                        PayDate = payroll.PayDate,
+                        FrDate = payroll.FrDate,
+                        ToDate = payroll.ToDate,
+                        MedicalLeaveDeduction = calculationResult.MedicalLeaveDeduction,
+                        UnpaidLeaveDeduction = calculationResult.UnpaidLeaveDeduction,
+                        ServiceLeaveDeduction = calculationResult.ServiceLeaveDeduction
+                    });
+                }
+
+                return View(payrollViewModels);
+            }
+            catch (Exception ex)
+            {
+                
+                return StatusCode(500, "An error occurred while retrieving payroll data.");
+            }
         }
 
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var currentUser = GetCurrentUser();
-
+            var currentUser =  GetCurrentUser();
             var isInRole = User.IsInRole("Admin") || User.IsInRole("HR-Admin");
             var isFinanceAdmin = currentUser?.JobTitle == "Finance-Admin";
+            bool isAdmin = isInRole || isFinanceAdmin;
 
-            var isAdmin = isInRole || isFinanceAdmin;
+            
 
             var viewModel = new PayrollCreateViewModel
             {
@@ -84,22 +134,89 @@ namespace HR_Products.Controllers
                         Value = e.EmpeId.ToString(),
                         Text = $"{e.EmpeName}"
                     })
-                    .ToListAsync()
+                    .ToListAsync(),
+                FrDate = DateTime.Today,
+                ToDate = DateTime.Today,
+                PayDate = DateTime.Today
             };
 
             if (!isAdmin && currentUser != null)
             {
                 viewModel.EmpeId = currentUser.EmpeId;
                 viewModel.EmpeName = currentUser.EmpeName;
-                if (currentUser != null)
-                {
-                    viewModel.Department = currentUser.PostalCode;
-                    viewModel.Position = currentUser.Status;
-                }
+                viewModel.Department = currentUser.PostalCode;
+                viewModel.Position = currentUser.Status;
+
+                DateTime today = DateTime.Today;
+                DateTime firstDayOfCurrentMonth = new DateTime(today.Year, today.Month, 1);
+                DateTime lastDayOfPreviousMonth = firstDayOfCurrentMonth.AddDays(-1);
+                DateTime firstDayOfPreviousMonth = new DateTime(lastDayOfPreviousMonth.Year, lastDayOfPreviousMonth.Month, 1);
+
+                var lastMonthPayrollBasicSalary = await _context.PAYROLLS
+                    .Where(p => p.EmpeId == currentUser.EmpeId &&
+                                p.PayDate >= firstDayOfPreviousMonth &&
+                                p.PayDate <= lastDayOfPreviousMonth)
+                    .OrderByDescending(p => p.PayDate)
+                    .Select(p => (decimal?)p.BasicSalary)
+                    .FirstOrDefaultAsync();
+
+                viewModel.BasicSalary = lastMonthPayrollBasicSalary ?? 0m;
             }
+            else if (isAdmin)
+            {
+                // For admin, if there's a selected employee from a prior post or parameter,
+                // you might want to pre-select it in the dropdown. No auto-pop here initially for admin.
+                
+            }
+
 
             return View(viewModel);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetEmployeeDetails(int employeeId)
+        {
+            
+
+            var employeeProfile = await _context.EMPE_PROFILE
+                .Select(e => new
+                {
+                    e.EmpeId,
+                    e.PostalCode, 
+                    e.Status,     
+                })
+                .FirstOrDefaultAsync(e => e.EmpeId == employeeId);
+
+            if (employeeProfile == null)
+            {
+                
+                return NotFound(new { error = "Employee not found." });
+            }
+
+            DateTime today = DateTime.Today;
+            DateTime firstDayOfCurrentMonth = new DateTime(today.Year, today.Month, 1);
+            DateTime lastDayOfPreviousMonth = firstDayOfCurrentMonth.AddDays(-1);
+            DateTime firstDayOfPreviousMonth = new DateTime(lastDayOfPreviousMonth.Year, lastDayOfPreviousMonth.Month, 1);
+
+            var lastMonthPayrollBasicSalary = await _context.PAYROLLS
+                .Where(p => p.EmpeId == employeeId &&
+                            p.PayDate >= firstDayOfPreviousMonth &&
+                            p.PayDate <= lastDayOfPreviousMonth)
+                .OrderByDescending(p => p.PayDate)
+                .Select(p => (decimal?)p.BasicSalary)
+                .FirstOrDefaultAsync();
+
+            decimal basicSalary = lastMonthPayrollBasicSalary ?? 0m;
+
+           
+            return Json(new
+            {
+                department = employeeProfile.PostalCode,
+                position = employeeProfile.Status,
+                basicSalary = basicSalary 
+            });
+        }
+
         private async Task<decimal> GetApprovedLeaveDurationForMonth(int employeeId, string leaveTypeName, int year, int month, bool isHalfDayAdjusted = true)
         {
             DateTime firstDayOfMonth = new DateTime(year, month, 1);
@@ -129,18 +246,19 @@ namespace HR_Products.Controllers
             return totalDuration;
         }
 
-
-        private async Task<decimal> CalculateDeductionsAndNetPay(
+        private async Task<PayrollCalculationResult> CalculateDeductionsAndNetPay(
            int employeeId,
            decimal basicSalary,
            decimal allowance,
            decimal tax,
            decimal overtimeHours,
-           decimal deductions, 
+           decimal deductions,
            DateTime frDate,
            DateTime toDate)
         {
-            decimal totalDeductionForLeaves = 0m;
+            decimal medicalLeaveDeduction = 0m;
+            decimal unpaidLeaveDeduction = 0m;
+            decimal serviceLeaveDeduction = 0m; 
 
             int payrollPeriodDays = (toDate - frDate).Days + 1;
             if (payrollPeriodDays <= 0) payrollPeriodDays = 1;
@@ -151,11 +269,11 @@ namespace HR_Products.Controllers
                 .Where(lr => lr.EmployeeId == employeeId &&
                              lr.Status == "Approved" &&
                              (lr.LeaveType.LEAV_TYPE_NAME == "UPL" || lr.LeaveType.LEAV_TYPE_NAME == "ML") &&
-                             (lr.StartDate <= toDate && lr.EndDate >= frDate)) 
+                             (lr.StartDate <= toDate && lr.EndDate >= frDate))
                 .ToListAsync();
 
-            decimal totalUPLDuration = 0m;
-            decimal totalMLDuration = 0m;
+            decimal totalUPLDurationInPeriod = 0m;
+            decimal totalMLDurationInPeriod = 0m;
 
             foreach (var leave in relevantUplMlLeaves)
             {
@@ -171,61 +289,76 @@ namespace HR_Products.Controllers
 
                 if (leave.LeaveType.LEAV_TYPE_NAME == "UPL")
                 {
-                    totalUPLDuration += actualLeaveDurationInPeriod;
+                    totalUPLDurationInPeriod += actualLeaveDurationInPeriod;
                 }
                 else if (leave.LeaveType.LEAV_TYPE_NAME == "ML")
                 {
-                    totalMLDuration += actualLeaveDurationInPeriod;
+                    totalMLDurationInPeriod += actualLeaveDurationInPeriod;
                 }
             }
 
-            decimal uplDeduction = dailyBasicSalary * totalUPLDuration;
-            decimal mlDeduction = dailyBasicSalary * 0.5m * totalMLDuration;
+            unpaidLeaveDeduction = dailyBasicSalary * totalUPLDurationInPeriod;
+            medicalLeaveDeduction = dailyBasicSalary * 0.5m * totalMLDurationInPeriod;
 
-            totalDeductionForLeaves += uplDeduction + mlDeduction;
-           
-            decimal serlDeductionAmount = 0m;
-            decimal sumOfPrevious11MonthsBasicSalaries = 0m;
-            decimal sumOfMonthlyValues = 0m;
+           decimal totalSERLDaysInCurrentPeriod = await GetApprovedLeaveDurationForMonth(employeeId, "SER-L", frDate.Year, frDate.Month); // Assuming current payroll is for a single month
 
-            for (int i = 1; i <= 11; i++)
+            if (totalSERLDaysInCurrentPeriod > 0)
             {
-                DateTime monthBeforeFrDate = frDate.AddMonths(-i);
-                DateTime historicalMonthStart = new DateTime(monthBeforeFrDate.Year, monthBeforeFrDate.Month, 1);
-                DateTime historicalMonthEnd = historicalMonthStart.AddMonths(1).AddDays(-1);
-                var historicalPayroll = await _context.PAYROLLS
-                    .Where(p => p.EmpeId == employeeId &&
-                                p.PayDate >= historicalMonthStart &&
-                                p.PayDate <= historicalMonthEnd)
-                    .OrderByDescending(p => p.PayDate) 
-                    .Select(p => (decimal?)p.BasicSalary)
-                    .FirstOrDefaultAsync();
-
-                decimal historicalBasicSalary = historicalPayroll ?? 0m;
-                sumOfPrevious11MonthsBasicSalaries += historicalBasicSalary;
-
-                decimal serlDurationInMonth = await GetApprovedLeaveDurationForMonth(employeeId, "SER-L", historicalMonthStart.Year, historicalMonthStart.Month);
-                int totalCalendarDaysInMonth = DateTime.DaysInMonth(historicalMonthStart.Year, historicalMonthStart.Month);
-
-                decimal monthlyValue = 1m;
-                if (totalCalendarDaysInMonth > 0)
+                decimal sumOfPrevious11MonthsBasicSalaries = 0m;
+                decimal sumOfMonthlyValues = 0m;
+                for (int i = 1; i <= 11; i++)
                 {
-                    monthlyValue = (totalCalendarDaysInMonth - serlDurationInMonth) / totalCalendarDaysInMonth;
-                    if (monthlyValue < 0) monthlyValue = 0; 
+                    DateTime historicalMonth = frDate.AddMonths(-i);
+                    DateTime historicalMonthStart = new DateTime(historicalMonth.Year, historicalMonth.Month, 1);
+                    DateTime historicalMonthEnd = historicalMonthStart.AddMonths(1).AddDays(-1);
+
+                    var historicalPayroll = await _context.PAYROLLS
+                        .Where(p => p.EmpeId == employeeId &&
+                                     p.PayDate >= historicalMonthStart &&
+                                     p.PayDate <= historicalMonthEnd)
+                        .OrderByDescending(p => p.PayDate)
+                        .Select(p => (decimal?)p.BasicSalary)
+                        .FirstOrDefaultAsync();
+
+                    decimal historicalBasicSalary = historicalPayroll ?? 0m;
+                    sumOfPrevious11MonthsBasicSalaries += historicalBasicSalary;
+
+                    decimal serlDurationInHistoricalMonth = await GetApprovedLeaveDurationForMonth(employeeId, "SER-L", historicalMonthStart.Year, historicalMonthStart.Month);
+                    int totalCalendarDaysInHistoricalMonth = DateTime.DaysInMonth(historicalMonthStart.Year, historicalMonthStart.Month);
+
+                    decimal monthlyValue = 1m; 
+                    if (totalCalendarDaysInHistoricalMonth > 0)
+                    {
+                        monthlyValue = (totalCalendarDaysInHistoricalMonth - serlDurationInHistoricalMonth) / totalCalendarDaysInHistoricalMonth;
+                        if (monthlyValue < 0) monthlyValue = 0;
+                    }
+                    sumOfMonthlyValues += monthlyValue;
                 }
 
-                sumOfMonthlyValues += monthlyValue;
+                if (sumOfMonthlyValues > 0)
+                {
+                    decimal effectiveMonthlyBasicSalaryAverage = sumOfPrevious11MonthsBasicSalaries / 11m; // Average if no SER-L effects
+                    decimal adjustedMonthlyBasicSalaryAverage = sumOfPrevious11MonthsBasicSalaries / sumOfMonthlyValues; // Average with SER-L effects
+
+                    
+                    decimal totalImpactFromHistoricalSERL = adjustedMonthlyBasicSalaryAverage - effectiveMonthlyBasicSalaryAverage;
+
+                    serviceLeaveDeduction = dailyBasicSalary * 0.1m * totalSERLDaysInCurrentPeriod;
+
+                }
             }
 
-            if (sumOfMonthlyValues > 0)
+
+            decimal totalDeductionForLeaves = unpaidLeaveDeduction + medicalLeaveDeduction + serviceLeaveDeduction;
+            decimal calculatedNetPay = basicSalary + allowance + overtimeHours - tax - totalDeductionForLeaves - deductions;
+
+            return new PayrollCalculationResult
             {
-                serlDeductionAmount = sumOfPrevious11MonthsBasicSalaries / sumOfMonthlyValues;
-            }
-
-            totalDeductionForLeaves += serlDeductionAmount; 
-            decimal calculatedNetPay = basicSalary + allowance - tax - totalDeductionForLeaves - deductions;
-
-            return calculatedNetPay;
+                NetPay = calculatedNetPay,
+                MedicalLeaveDeduction = medicalLeaveDeduction,
+                UnpaidLeaveDeduction = unpaidLeaveDeduction,
+                ServiceLeaveDeduction = serviceLeaveDeduction
+            };
         }
 
         [HttpGet]
@@ -246,13 +379,20 @@ namespace HR_Products.Controllers
 
             try
             {
-                decimal netPay = await CalculateDeductionsAndNetPay(
+                var calculationResult = await CalculateDeductionsAndNetPay(
                     employeeId, basicSalary, allowance, tax, overtimeHours, deductions, frDate, toDate);
 
-                return Json(new { netPay = netPay });
+                return Json(new
+                {
+                    netPay = calculationResult.NetPay,
+                    medicalLeaveDeduction = calculationResult.MedicalLeaveDeduction,
+                    unpaidLeaveDeduction = calculationResult.UnpaidLeaveDeduction,
+                    serviceLeaveDeduction = calculationResult.ServiceLeaveDeduction
+                });
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Internal server error during calculation: {ex.Message}");
                 return StatusCode(500, new { error = $"Internal server error during calculation: {ex.Message}" });
             }
         }
@@ -299,8 +439,7 @@ namespace HR_Products.Controllers
             model.Department = selectedEmployee.PostalCode;
             model.Position = selectedEmployee.Status;
 
-            
-            model.NetPay = await CalculateDeductionsAndNetPay(
+            var calculationResult = await CalculateDeductionsAndNetPay(
                 model.EmpeId,
                 model.BasicSalary,
                 model.Allowance,
@@ -310,6 +449,8 @@ namespace HR_Products.Controllers
                 model.FrDate,
                 model.ToDate
             );
+
+            model.NetPay = calculationResult.NetPay;
 
             var payroll = new Payroll
             {
@@ -323,7 +464,7 @@ namespace HR_Products.Controllers
                 Tax = model.Tax,
                 Deductions = model.Deductions,
                 GrossPay = model.GrossPay,
-                NetPay = model.NetPay, 
+                NetPay = model.NetPay,
                 FrDate = model.FrDate,
                 ToDate = model.ToDate,
                 PayDate = model.PayDate
@@ -339,50 +480,13 @@ namespace HR_Products.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Error saving payroll record: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error creating payroll: {ex.Message}");
                 model.Employees = await _context.EMPE_PROFILE
                     .Select(e => new SelectListItem { Value = e.EmpeId.ToString(), Text = $"{e.EmpeName}" })
                     .ToListAsync();
                 model.IsAdmin = isAdmin;
                 return View(model);
             }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetEmployeeDetails(int employeeId)
-        {
-            if (employeeId <= 0)
-            {
-                return NotFound(new { error = "Invalid Employee ID provided." });
-            }
-
-            var employeeProfile = await _context.EMPE_PROFILE
-                                               .FirstOrDefaultAsync(e => e.EmpeId == employeeId);
-
-            if (employeeProfile == null)
-            {
-                return NotFound(new { error = $"Employee with ID {employeeId} not found." });
-            }
-
-            DateTime today = DateTime.Today;
-            DateTime firstDayOfCurrentMonth = new DateTime(today.Year, today.Month, 1);
-            DateTime lastDayOfPreviousMonth = firstDayOfCurrentMonth.AddDays(-1);
-            DateTime firstDayOfPreviousMonth = new DateTime(lastDayOfPreviousMonth.Year, lastDayOfPreviousMonth.Month, 1);
-
-            var lastMonthPayroll = await _context.PAYROLLS
-                                                .Where(p => p.EmpeId == employeeId &&
-                                                            p.PayDate >= firstDayOfPreviousMonth &&
-                                                            p.PayDate <= lastDayOfPreviousMonth)
-                                                .OrderByDescending(p => p.PayDate) 
-                                                .FirstOrDefaultAsync();
-
-            decimal lastMonthBasicSalary = lastMonthPayroll?.BasicSalary ?? 0m; 
-
-            return Json(new
-            {
-                department = employeeProfile.PostalCode, 
-                position = employeeProfile.Status,      
-                basicSalary = lastMonthBasicSalary      
-            });
         }
 
         [HttpGet]
@@ -395,8 +499,8 @@ namespace HR_Products.Controllers
             }
 
             var payroll = await _context.PAYROLLS
-                                        .Include(p => p.Employee) 
-                                        .FirstOrDefaultAsync(m => m.PayrollId == id);
+                .Include(p => p.Employee)
+                .FirstOrDefaultAsync(m => m.PayrollId == id);
 
             if (payroll == null)
             {
@@ -410,10 +514,42 @@ namespace HR_Products.Controllers
             if (!isAdmin && (currentUser == null || payroll.EmpeId != currentUser.EmpeId))
             {
                 TempData["ErrorMessage"] = "You are not authorized to view this payroll record.";
-                return RedirectToAction(nameof(Index)); 
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(payroll); 
+            var calculationResult = await CalculateDeductionsAndNetPay(
+                payroll.EmpeId,
+                payroll.BasicSalary,
+                payroll.Allowance,
+                payroll.Tax,
+                payroll.OvertimeHours,
+                payroll.Deductions,
+                payroll.FrDate,
+                payroll.ToDate);
+
+            var viewModel = new PayrollDetailViewModel
+            {
+                PayrollId = payroll.PayrollId,
+                EmpeId = payroll.EmpeId,
+                EmpeName = payroll.EmpeName,
+                Department = payroll.Department,
+                Position = payroll.Position,
+                BasicSalary = payroll.BasicSalary,
+                Allowance = payroll.Allowance,
+                OvertimeHours = payroll.OvertimeHours,
+                Tax = payroll.Tax,
+                Deductions = payroll.Deductions,
+                GrossPay = payroll.GrossPay,
+                NetPay = calculationResult.NetPay,
+                FrDate = payroll.FrDate,
+                ToDate = payroll.ToDate,
+                PayDate = payroll.PayDate,
+                MedicalLeaveDeduction = calculationResult.MedicalLeaveDeduction,
+                UnpaidLeaveDeduction = calculationResult.UnpaidLeaveDeduction,
+                ServiceLeaveDeduction = calculationResult.ServiceLeaveDeduction
+            };
+
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -426,8 +562,8 @@ namespace HR_Products.Controllers
             }
 
             var payroll = await _context.PAYROLLS
-                                        .Include(p => p.Employee)
-                                        .FirstOrDefaultAsync(m => m.PayrollId == id);
+                .Include(p => p.Employee)
+                .FirstOrDefaultAsync(m => m.PayrollId == id);
 
             if (payroll == null)
             {
@@ -435,12 +571,25 @@ namespace HR_Products.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-           
+            var currentUser = GetCurrentUser();
+            bool isAdmin = User.IsInRole("Admin") || User.IsInRole("HR-Admin") || (currentUser?.JobTitle == "Finance-Admin");
+
+            var calculationResult = await CalculateDeductionsAndNetPay(
+                payroll.EmpeId,
+                payroll.BasicSalary,
+                payroll.Allowance,
+                payroll.Tax,
+                payroll.OvertimeHours,
+                payroll.Deductions,
+                payroll.FrDate,
+                payroll.ToDate
+            );
+
             var viewModel = new PayrollCreateViewModel
             {
                 PayrollId = payroll.PayrollId,
                 EmpeId = payroll.EmpeId,
-                EmpeName = payroll.EmpeName, 
+                EmpeName = payroll.EmpeName,
                 Department = payroll.Department,
                 Position = payroll.Position,
                 BasicSalary = payroll.BasicSalary,
@@ -449,18 +598,19 @@ namespace HR_Products.Controllers
                 Tax = payroll.Tax,
                 Deductions = payroll.Deductions,
                 GrossPay = payroll.GrossPay,
-                NetPay = payroll.NetPay,
+                NetPay = calculationResult.NetPay,
                 FrDate = payroll.FrDate,
                 ToDate = payroll.ToDate,
                 PayDate = payroll.PayDate,
-                Employees = await _context.EMPE_PROFILE 
+                Employees = await _context.EMPE_PROFILE
                     .Select(e => new SelectListItem
                     {
                         Value = e.EmpeId.ToString(),
                         Text = $"{e.EmpeName}",
-                        Selected = e.EmpeId == payroll.EmpeId 
+                        Selected = e.EmpeId == payroll.EmpeId
                     })
-                    .ToListAsync()
+                    .ToListAsync(),
+                IsAdmin = isAdmin
             };
 
             return View(viewModel);
@@ -479,12 +629,11 @@ namespace HR_Products.Controllers
             var currentUser = GetCurrentUser();
             bool isAdmin = User.IsInRole("Admin") || User.IsInRole("HR-Admin") || (currentUser?.JobTitle == "Finance-Admin");
 
-            
             model.Employees = await _context.EMPE_PROFILE
                 .Select(e => new SelectListItem
                 {
                     Value = e.EmpeId.ToString(),
-                    Text = $"{e.EmpeName}", 
+                    Text = $"{e.EmpeName}",
                     Selected = e.EmpeId == model.EmpeId
                 })
                 .ToListAsync();
@@ -510,10 +659,9 @@ namespace HR_Products.Controllers
 
             model.Department = selectedEmployee.PostalCode;
             model.Position = selectedEmployee.Status;
-            model.EmpeName = selectedEmployee.EmpeName; 
+            model.EmpeName = selectedEmployee.EmpeName;
 
-            
-            model.NetPay = await CalculateDeductionsAndNetPay(
+            var calculationResult = await CalculateDeductionsAndNetPay(
                 model.EmpeId,
                 model.BasicSalary,
                 model.Allowance,
@@ -523,7 +671,8 @@ namespace HR_Products.Controllers
                 model.FrDate,
                 model.ToDate
             );
-            
+            model.NetPay = calculationResult.NetPay;
+
 
             var payrollToUpdate = await _context.PAYROLLS.FindAsync(id);
 
@@ -543,7 +692,7 @@ namespace HR_Products.Controllers
             payrollToUpdate.Tax = model.Tax;
             payrollToUpdate.Deductions = model.Deductions;
             payrollToUpdate.GrossPay = model.GrossPay;
-            payrollToUpdate.NetPay = model.NetPay; 
+            payrollToUpdate.NetPay = model.NetPay;
             payrollToUpdate.FrDate = model.FrDate;
             payrollToUpdate.ToDate = model.ToDate;
             payrollToUpdate.PayDate = model.PayDate;
@@ -570,6 +719,7 @@ namespace HR_Products.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Error updating payroll record: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error updating payroll: {ex.Message}");
                 return View(model);
             }
         }
@@ -577,13 +727,13 @@ namespace HR_Products.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var employee = await _context.PAYROLLS.FindAsync(id);
-            if (employee == null)
+            var payroll = await _context.PAYROLLS.FindAsync(id);
+            if (payroll == null)
             {
                 return NotFound();
             }
 
-            _context.PAYROLLS.Remove(employee);
+            _context.PAYROLLS.Remove(payroll);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
@@ -593,31 +743,69 @@ namespace HR_Products.Controllers
         {
             try
             {
-                var currentUser = GetCurrentUser(); 
+                var currentUser = GetCurrentUser();
                 bool isAdminRoleUser = User.IsInRole("Admin") || User.IsInRole("HR-Admin");
                 bool isFinanceAdminByJobTitle = (currentUser?.JobTitle == "Finance-Admin");
                 bool canSeeAllRecords = isAdminRoleUser || isFinanceAdminByJobTitle;
 
                 IQueryable<Payroll> payrollQuery = _context.PAYROLLS
-                                                         .Include(p => p.Employee); 
+                    .Include(p => p.Employee);
 
                 if (!canSeeAllRecords)
                 {
                     if (currentUser == null)
                     {
                         TempData["ErrorMessage"] = "Your employee profile could not be found. Please log in again.";
-                        return View(new List<Payroll>());
+                        return View(new List<PayrollDetailViewModel>());
                     }
                     payrollQuery = payrollQuery.Where(p => p.EmpeId == currentUser.EmpeId);
                 }
-                var transactions = await payrollQuery.OrderByDescending(p => p.PayDate).ToListAsync();
 
-                return View(transactions);
+                var payrolls = await payrollQuery.OrderByDescending(p => p.PayDate).ToListAsync();
+                var payrollTransactionViewModels = new List<PayrollDetailViewModel>();
+
+                foreach (var payroll in payrolls)
+                {
+                    var calculationResult = await CalculateDeductionsAndNetPay(
+                        payroll.EmpeId,
+                        payroll.BasicSalary,
+                        payroll.Allowance,
+                        payroll.Tax,
+                        payroll.OvertimeHours,
+                        payroll.Deductions,
+                        payroll.FrDate,
+                        payroll.ToDate);
+
+                    payrollTransactionViewModels.Add(new PayrollDetailViewModel
+                    {
+                        PayrollId = payroll.PayrollId,
+                        EmpeId = payroll.EmpeId,
+                        EmpeName = payroll.EmpeName,
+                        Department = payroll.Department,
+                        Position = payroll.Position,
+                        BasicSalary = payroll.BasicSalary,
+                        Allowance = payroll.Allowance,
+                        OvertimeHours = payroll.OvertimeHours,
+                        Tax = payroll.Tax,
+                        Deductions = payroll.Deductions,
+                        GrossPay = payroll.GrossPay,
+                        NetPay = calculationResult.NetPay,
+                        FrDate = payroll.FrDate,
+                        ToDate = payroll.ToDate,
+                        PayDate = payroll.PayDate,
+                        MedicalLeaveDeduction = calculationResult.MedicalLeaveDeduction,
+                        UnpaidLeaveDeduction = calculationResult.UnpaidLeaveDeduction,
+                        ServiceLeaveDeduction = calculationResult.ServiceLeaveDeduction
+                    });
+                }
+
+                return View(payrollTransactionViewModels);
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "An error occurred while retrieving transaction data.";
-                return View(new List<Payroll>());
+                System.Diagnostics.Debug.WriteLine($"Error retrieving payroll transactions: {ex.Message}");
+                return View(new List<PayrollDetailViewModel>());
             }
         }
 
@@ -627,12 +815,12 @@ namespace HR_Products.Controllers
             if (id == null)
             {
                 TempData["ErrorMessage"] = "Transaction ID not provided.";
-                return RedirectToAction(nameof(Transaction)); 
+                return RedirectToAction(nameof(Transaction));
             }
 
             var transaction = await _context.PAYROLLS
-                                            .Include(p => p.Employee)
-                                            .FirstOrDefaultAsync(m => m.PayrollId == id);
+                .Include(p => p.Employee)
+                .FirstOrDefaultAsync(m => m.PayrollId == id);
 
             if (transaction == null)
             {
@@ -640,20 +828,57 @@ namespace HR_Products.Controllers
                 return RedirectToAction(nameof(Transaction));
             }
 
-            if (transaction.Employee?.JobTitle == "User")
+            var currentUser = GetCurrentUser();
+            bool isAdminRoleUser = User.IsInRole("Admin") || User.IsInRole("HR-Admin");
+            bool isFinanceAdminByJobTitle = (currentUser?.JobTitle == "Finance-Admin");
+            bool canSeeAllRecords = isAdminRoleUser || isFinanceAdminByJobTitle;
+
+            if (!canSeeAllRecords && (currentUser == null || transaction.EmpeId != currentUser.EmpeId))
             {
                 TempData["ErrorMessage"] = "You are not authorized to view this transaction record.";
                 return RedirectToAction(nameof(Transaction));
             }
 
-            return View(transaction); 
+            var calculationResult = await CalculateDeductionsAndNetPay(
+                transaction.EmpeId,
+                transaction.BasicSalary,
+                transaction.Allowance,
+                transaction.Tax,
+                transaction.OvertimeHours,
+                transaction.Deductions,
+                transaction.FrDate,
+                transaction.ToDate);
+
+            var viewModel = new PayrollDetailViewModel
+            {
+                PayrollId = transaction.PayrollId,
+                EmpeId = transaction.EmpeId,
+                EmpeName = transaction.EmpeName,
+                Department = transaction.Department,
+                Position = transaction.Position,
+                BasicSalary = transaction.BasicSalary,
+                Allowance = transaction.Allowance,
+                OvertimeHours = transaction.OvertimeHours,
+                Tax = transaction.Tax,
+                Deductions = transaction.Deductions,
+                GrossPay = transaction.GrossPay,
+                NetPay = calculationResult.NetPay,
+                FrDate = transaction.FrDate,
+                ToDate = transaction.ToDate,
+                PayDate = transaction.PayDate,
+                MedicalLeaveDeduction = calculationResult.MedicalLeaveDeduction,
+                UnpaidLeaveDeduction = calculationResult.UnpaidLeaveDeduction,
+                ServiceLeaveDeduction = calculationResult.ServiceLeaveDeduction
+            };
+
+            return View(viewModel);
         }
 
         [HttpGet]
         public async Task<IActionResult> Report()
         {
             var viewModel = new ReportViewModel();
-            var currentUser = GetCurrentUser();
+            var currentUser =  GetCurrentUser();
             bool isAdmin = User.IsInRole("Admin") || User.IsInRole("HR-Admin") || (currentUser?.JobTitle == "Finance-Admin");
 
             if (!isAdmin)
@@ -719,7 +944,7 @@ namespace HR_Products.Controllers
             for (int i = 1; i <= 12; i++) { model.Months.Add(new SelectListItem { Value = i.ToString(), Text = new DateTime(currentYear, i, 1).ToString("MMMM") }); }
 
             var employee = await _context.EMPE_PROFILE
-                                        .FirstOrDefaultAsync(e => e.EmpeId == model.SelectedEmployeeId);
+                                         .FirstOrDefaultAsync(e => e.EmpeId == model.SelectedEmployeeId);
 
             if (employee == null)
             {
@@ -772,7 +997,7 @@ namespace HR_Products.Controllers
                 .Where(lr => lr.EmployeeId == model.SelectedEmployeeId &&
                              lr.Status == "Approved" &&
                              (lr.StartDate <= payrollRecord.ToDate && lr.EndDate >= payrollRecord.FrDate))
-                .OrderBy(lr => lr.StartDate) 
+                .OrderBy(lr => lr.StartDate)
                 .ToListAsync();
 
             foreach (var leave in allRelevantApprovedLeaves.Where(leave => leave.LeaveType.LEAV_TYPE_NAME == "UPL" || leave.LeaveType.LEAV_TYPE_NAME == "ML"))
@@ -790,45 +1015,49 @@ namespace HR_Products.Controllers
             mlDeduction = dailyBasicSalary * 0.5m * totalMLDays;
 
 
-            decimal serlDeductionAmount = 0m;
+            decimal totalSERLDaysInCurrentPayrollPeriod = await GetApprovedLeaveDurationForMonth(employee.EmpeId, "SER-L", payrollRecord.FrDate.Year, payrollRecord.FrDate.Month);
+            
+            decimal serlDeductionAmount = 0m; 
             decimal sumOfPrevious11MonthsBasicSalaries = 0m;
             decimal sumOfMonthlyValues = 0m;
-            decimal totalSERLDaysPast11Months = 0m;
-
-            for (int i = 1; i <= 11; i++)
+            decimal totalSERLDaysPast11Months = 0m; 
+            if (totalSERLDaysInCurrentPayrollPeriod > 0)
             {
-                DateTime monthBeforeFrDate = payrollRecord.FrDate.AddMonths(-i);
-                DateTime historicalMonthStart = new DateTime(monthBeforeFrDate.Year, monthBeforeFrDate.Month, 1);
-                DateTime historicalMonthEnd = historicalMonthStart.AddMonths(1).AddDays(-1);
-
-                var historicalPayroll = await _context.PAYROLLS
-                    .Where(p => p.EmpeId == model.SelectedEmployeeId &&
-                                p.PayDate >= historicalMonthStart &&
-                                p.PayDate <= historicalMonthEnd)
-                    .OrderByDescending(p => p.PayDate)
-                    .Select(p => (decimal?)p.BasicSalary)
-                    .FirstOrDefaultAsync();
-
-                decimal historicalBasicSalary = historicalPayroll ?? 0m;
-                sumOfPrevious11MonthsBasicSalaries += historicalBasicSalary;
-
-                decimal serlDurationInMonth = await GetApprovedLeaveDurationForMonth(model.SelectedEmployeeId, "SER-L", historicalMonthStart.Year, historicalMonthStart.Month);
-                totalSERLDaysPast11Months += serlDurationInMonth;
-
-                int totalCalendarDaysInMonth = DateTime.DaysInMonth(historicalMonthStart.Year, historicalMonthStart.Month);
-
-                decimal monthlyValue = 1m;
-                if (totalCalendarDaysInMonth > 0)
+                for (int i = 1; i <= 11; i++)
                 {
-                    monthlyValue = (totalCalendarDaysInMonth - serlDurationInMonth) / totalCalendarDaysInMonth;
-                    if (monthlyValue < 0) monthlyValue = 0;
-                }
-                sumOfMonthlyValues += monthlyValue;
-            }
+                    DateTime monthBeforeFrDate = payrollRecord.FrDate.AddMonths(-i);
+                    DateTime historicalMonthStart = new DateTime(monthBeforeFrDate.Year, monthBeforeFrDate.Month, 1);
+                    DateTime historicalMonthEnd = historicalMonthStart.AddMonths(1).AddDays(-1);
 
-            if (sumOfMonthlyValues > 0)
-            {
-                serlDeductionAmount = sumOfPrevious11MonthsBasicSalaries / sumOfMonthlyValues;
+                    var historicalPayroll = await _context.PAYROLLS
+                        .Where(p => p.EmpeId == model.SelectedEmployeeId &&
+                                     p.PayDate >= historicalMonthStart &&
+                                     p.PayDate <= historicalMonthEnd)
+                        .OrderByDescending(p => p.PayDate)
+                        .Select(p => (decimal?)p.BasicSalary)
+                        .FirstOrDefaultAsync();
+
+                    decimal historicalBasicSalary = historicalPayroll ?? 0m;
+                    sumOfPrevious11MonthsBasicSalaries += historicalBasicSalary;
+
+                    decimal serlDurationInMonth = await GetApprovedLeaveDurationForMonth(model.SelectedEmployeeId, "SER-L", historicalMonthStart.Year, historicalMonthStart.Month);
+                    totalSERLDaysPast11Months += serlDurationInMonth;
+
+                    int totalCalendarDaysInMonth = DateTime.DaysInMonth(historicalMonthStart.Year, historicalMonthStart.Month);
+
+                    decimal monthlyValue = 1m;
+                    if (totalCalendarDaysInMonth > 0)
+                    {
+                        monthlyValue = (totalCalendarDaysInMonth - serlDurationInMonth) / totalCalendarDaysInMonth;
+                        if (monthlyValue < 0) monthlyValue = 0;
+                    }
+                    sumOfMonthlyValues += monthlyValue;
+                }
+
+                if (sumOfMonthlyValues > 0)
+                {
+                    serlDeductionAmount = sumOfPrevious11MonthsBasicSalaries / sumOfMonthlyValues;
+                }
             }
 
 
@@ -853,6 +1082,9 @@ namespace HR_Products.Controllers
             payrollSummaryBuilder.AppendLine($"Other Deductions  => {payrollRecord.Deductions.ToString("0.00")}");
             payrollSummaryBuilder.AppendLine($"Gross Pay         => {payrollRecord.GrossPay.ToString("0.00")}");
             payrollSummaryBuilder.AppendLine($"Net Amount        => {payrollRecord.NetPay.ToString("0.00")}");
+            payrollSummaryBuilder.AppendLine($"ML Deduction      => {mlDeduction.ToString("0.00")}");
+            payrollSummaryBuilder.AppendLine($"UPL Deduction     => {uplDeduction.ToString("0.00")}");
+            payrollSummaryBuilder.AppendLine($"SER-L Deduction   => {serlDeductionAmount.ToString("0.00")}"); // Using the calculated amount
             string payrollSummaryList = payrollSummaryBuilder.ToString();
 
             StringBuilder detailedLeaveRecordsBuilder = new StringBuilder();
@@ -879,17 +1111,22 @@ namespace HR_Products.Controllers
                         individualDeduction = dailyBasicSalary * 0.5m * actualDurationForDisplay;
                         deductionString = individualDeduction.ToString("0.00");
                     }
+                    else if (leave.LeaveType.LEAV_TYPE_NAME == "SER-L")
+                    {
+                        individualDeduction = dailyBasicSalary * 0.1m * actualDurationForDisplay;
+                        deductionString = individualDeduction.ToString("0.00");
+                    }
 
-                   
-                    detailedLeaveRecordsBuilder.AppendLine($"Name           => {employee.EmpeName}"); 
-                    detailedLeaveRecordsBuilder.AppendLine($"Leave Type     => {leave.LeaveType.LEAV_TYPE_NAME}");
-                    detailedLeaveRecordsBuilder.AppendLine($"Start Date     => {leave.StartDate.ToString("MM/dd/yyyy")}");
-                    detailedLeaveRecordsBuilder.AppendLine($"End Date       => {leave.EndDate.ToString("MM/dd/yyyy")}");
-                    detailedLeaveRecordsBuilder.AppendLine($"Duration       => {actualDurationForDisplay.ToString("0.0")}");
-                    detailedLeaveRecordsBuilder.AppendLine($"Deduction Amt  => {deductionString}");
-                    detailedLeaveRecordsBuilder.AppendLine($"Used Date      => {leave.UsedToDate.ToString("0.00")}");
-                    detailedLeaveRecordsBuilder.AppendLine($"Accrual Balance=> {leave.AccrualBalance.ToString("0.00")}");
-                    detailedLeaveRecordsBuilder.AppendLine(); 
+
+                    detailedLeaveRecordsBuilder.AppendLine($"Name            => {employee.EmpeName}");
+                    detailedLeaveRecordsBuilder.AppendLine($"Leave Type      => {leave.LeaveType.LEAV_TYPE_NAME}");
+                    detailedLeaveRecordsBuilder.AppendLine($"Start Date      => {leave.StartDate.ToString("MM/dd/yyyy")}");
+                    detailedLeaveRecordsBuilder.AppendLine($"End Date        => {leave.EndDate.ToString("MM/dd/yyyy")}");
+                    detailedLeaveRecordsBuilder.AppendLine($"Duration        => {actualDurationForDisplay.ToString("0.0")}");
+                    detailedLeaveRecordsBuilder.AppendLine($"Deduction Amt   => {deductionString}");
+                    detailedLeaveRecordsBuilder.AppendLine($"Used Date       => {leave.UsedToDate.ToString("0.00")}");
+                    detailedLeaveRecordsBuilder.AppendLine($"Accrual Balance => {leave.AccrualBalance.ToString("0.00")}");
+                    detailedLeaveRecordsBuilder.AppendLine();
                 }
             }
             else
@@ -919,8 +1156,8 @@ namespace HR_Products.Controllers
                     doc.ReplaceText("{{UPLDeduction}}", uplDeduction.ToString("0.00"));
                     doc.ReplaceText("{{TotalMLDays}}", totalMLDays.ToString("0.00"));
                     doc.ReplaceText("{{MLDeduction}}", mlDeduction.ToString("0.00"));
-                    doc.ReplaceText("{{TotalSERLDaysPast11Months}}", totalSERLDaysPast11Months.ToString("0.00"));
-                    doc.ReplaceText("{{SERLDeduction}}", serlDeductionAmount.ToString("0.00"));
+                    doc.ReplaceText("{{TotalSERLDaysPast11Months}}", totalSERLDaysPast11Months.ToString("0.00")); // This is total days, not deduction
+                    doc.ReplaceText("{{SERLDeduction}}", serlDeductionAmount.ToString("0.00")); // This is the calculated deduction amount
 
                     using (MemoryStream ms = new MemoryStream())
                     {
@@ -935,8 +1172,177 @@ namespace HR_Products.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = $"Error generating report: {ex.Message}";
-                 return View("Report", model);
+                return View("Report", model);
             }
         }
+
+        [HttpGet]
+        public IActionResult DownloadTemplate()
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Format", "PayrollData.xlsx");
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound("Template file not found.");
+            }
+
+            var bytes = System.IO.File.ReadAllBytes(filePath);
+            return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "PayrollData.xlsx");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ImportPayrolls(IFormFile excelFile)
+        {
+            if (excelFile == null || excelFile.Length == 0)
+            {
+                TempData["ErrorMessage"] = "Please select a file to upload.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (Path.GetExtension(excelFile.FileName).ToLower() != ".xlsx")
+            {
+                TempData["ErrorMessage"] = "Only .xlsx Excel files are allowed.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var importedPayrolls = new List<Payroll>();
+
+            try
+            {
+                using var stream = new MemoryStream();
+                await excelFile.CopyToAsync(stream);
+
+                using var package = new ExcelPackage(stream);
+                var worksheet = package.Workbook.Worksheets.FirstOrDefault();
+
+                if (worksheet?.Dimension == null)
+                {
+                    TempData["ErrorMessage"] = "The Excel file is empty or invalid.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                int headerRow = 1;
+                var columnMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
+                {
+                    var header = worksheet.Cells[headerRow, col].Text?.Trim();
+                    if (string.IsNullOrEmpty(header)) continue;
+
+                    columnMap[header] = col;
+                }
+
+                string[] requiredColumns = new[] { "EmpeId", "EmpeName", "Department", "Position", "BasicSalary", "Allowance", "Tax", "FrDate", "ToDate", "PayDate" };
+                foreach (var colName in requiredColumns)
+                {
+                    if (!columnMap.ContainsKey(colName))
+                    {
+                        TempData["ErrorMessage"] = $"Excel must contain '{colName}' column.";
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+
+                for (int row = headerRow + 1; row <= worksheet.Dimension.End.Row; row++)
+                {
+                    string empeIdText = worksheet.Cells[row, columnMap["EmpeId"]].Text.Trim();
+                    if (string.IsNullOrEmpty(empeIdText) || !int.TryParse(empeIdText, out int empeId))
+                    {
+                        continue;
+                    }
+
+                    string empeName = worksheet.Cells[row, columnMap["EmpeName"]].Text.Trim();
+                    string department = worksheet.Cells[row, columnMap["Department"]].Text.Trim();
+                    string position = worksheet.Cells[row, columnMap["Position"]].Text.Trim();
+
+                    decimal basicSalary = 0m;
+                    decimal allowance = 0m;
+                    decimal tax = 0m;
+
+                    decimal.TryParse(worksheet.Cells[row, columnMap["BasicSalary"]].Text.Trim(), out basicSalary);
+                    decimal.TryParse(worksheet.Cells[row, columnMap["Allowance"]].Text.Trim(), out allowance);
+                    decimal.TryParse(worksheet.Cells[row, columnMap["Tax"]].Text.Trim(), out tax);
+
+                    DateTime frDate = ParseExcelDateSafe(worksheet.Cells[row, columnMap["FrDate"]].Value);
+                    DateTime toDate = ParseExcelDateSafe(worksheet.Cells[row, columnMap["ToDate"]].Value);
+                    DateTime payDate = ParseExcelDateSafe(worksheet.Cells[row, columnMap["PayDate"]].Value);
+
+                    if (frDate == DateTime.MinValue || toDate == DateTime.MinValue || payDate == DateTime.MinValue)
+                    {
+                        continue;
+                    }
+
+                    var calcResult = await CalculateDeductionsAndNetPay(
+                        empeId, basicSalary, allowance, tax, 0m, 0m, frDate, toDate);
+
+                    decimal grossPay = basicSalary + allowance; 
+
+                    var payroll = new Payroll
+                    {
+                        EmpeId = empeId,
+                        EmpeName = empeName,
+                        Department = department,
+                        Position = position,
+                        BasicSalary = basicSalary,
+                        Allowance = allowance,
+                        Tax = tax,
+                        GrossPay = grossPay,
+                        NetPay = calcResult.NetPay,
+                        FrDate = frDate,
+                        ToDate = toDate,
+                        PayDate = payDate
+                    };
+
+                    importedPayrolls.Add(payroll);
+                }
+
+                if (importedPayrolls.Count == 0)
+                {
+                    TempData["WarningMessage"] = "No valid payroll records found to import.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                _context.PAYROLLS.AddRange(importedPayrolls);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Successfully imported {importedPayrolls.Count} payroll records.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Import failed: {ex.Message}";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private DateTime ParseExcelDateSafe(object cellValue) 
+        {
+            if (cellValue == null) return DateTime.MinValue;
+
+            if (cellValue is DateTime dt)
+            {
+                return dt;
+            }
+
+            if (cellValue is double oa)
+            {
+                try
+                {
+                    return DateTime.FromOADate(oa);
+                }
+                catch
+                {
+                    return DateTime.MinValue;
+                }
+            }
+
+            if (DateTime.TryParse(cellValue.ToString(), out DateTime parsed))
+            {
+                return parsed;
+            }
+
+            return DateTime.MinValue;
+        }
+
+
     }
 }

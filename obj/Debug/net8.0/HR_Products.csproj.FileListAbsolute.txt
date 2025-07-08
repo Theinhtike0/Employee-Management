@@ -9,8 +9,14 @@ E:\CSharp\HR_Products\bin\Debug\net8.0\HR_Products.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\HR_Products.pdb
 E:\CSharp\HR_Products\bin\Debug\net8.0\Azure.Core.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\Azure.Identity.dll
+E:\CSharp\HR_Products\bin\Debug\net8.0\ClosedXML.dll
+E:\CSharp\HR_Products\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\CSharp\HR_Products\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\CSharp\HR_Products\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\Xceed.Document.NET.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\Xceed.Words.NET.dll
+E:\CSharp\HR_Products\bin\Debug\net8.0\EPPlus.dll
+E:\CSharp\HR_Products\bin\Debug\net8.0\ExcelNumberFormat.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\Humanizer.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
@@ -45,9 +51,12 @@ E:\CSharp\HR_Products\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+E:\CSharp\HR_Products\bin\Debug\net8.0\Microsoft.IO.RecyclableMemoryStream.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\Mono.TextTemplating.dll
+E:\CSharp\HR_Products\bin\Debug\net8.0\RBush.dll
+E:\CSharp\HR_Products\bin\Debug\net8.0\SixLabors.Fonts.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\SkiaSharp.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\System.CodeDom.dll
 E:\CSharp\HR_Products\bin\Debug\net8.0\System.Composition.AttributedModel.dll

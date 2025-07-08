@@ -3,21 +3,27 @@ using HR_Products.Data.Repositories;
 using HR_Products.Data.Seeder;
 using HR_Products.Models;
 using HR_Products.Models.Entitites;
-using HR_Products.Services;
+using HR_Products.Services; 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using OfficeOpenXml;
+using Microsoft.Extensions.Logging;
+
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<ZKTecoRawService>();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
-builder.Services.AddDbContext<IdentityDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+//builder.Services.AddDbContext<IdentityDbContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddHostedService<AutoRejectLeaveRequestsService>();
 
@@ -53,10 +59,16 @@ builder.Services.AddIdentity<Users, IdentityRole>(options =>
     options.SignIn.RequireConfirmedEmail = false;
     options.SignIn.RequireConfirmedPhoneNumber = false;
 })
-.AddEntityFrameworkStores<AppDbContext>()
+.AddEntityFrameworkStores<AppDbContext>() 
 .AddDefaultTokenProviders();
 
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+builder.Services.AddTransient<IEmailService, EmailService>();
+
+
 var app = builder.Build();
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -64,7 +76,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var dbContext = services.GetRequiredService<AppDbContext>();
-        dbContext.Database.Migrate(); 
+        dbContext.Database.Migrate();
 
         await DataSeeder.SeedRolesAndAdminAsync(services);
     }
@@ -92,9 +104,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseStaticFiles();
+app.UseStaticFiles(); 
 
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -1,0 +1,105 @@
+﻿@using HR_Products.ViewModels
+@using HR_Products.Models.Entitites
+@model ServiceBonusViewModel
+
+@{
+    ViewData["Title"] = "Request Service Bonus";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h4>Service Year Bonus Request</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="SubmitRequest" asp-controller="ServiceBonus" method="post">
+            <input type="hidden" asp-for="EmpeId" />
+            <input type="hidden" asp-for="EmpeName" />
+            <input type="hidden" asp-for="ServiceYears" />
+            <input type="hidden" asp-for="BasicSalary" />
+            <input type="hidden" asp-for="CalculatedBonus" />
+            <input type="hidden" asp-for="IsEligible" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Employee Name</label>
+                    <input class="form-control" value="@Model.EmpeName" readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Service Years</label>
+                    <input class="form-control" value="@Model.ServiceYears" readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Basic Salary</label>
+                    <input class="form-control" value="@Model.BasicSalary.ToString("C")" readonly>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Calculated Bonus</label>
+                    <input class="form-control" value="@Model.CalculatedBonus.ToString("C")" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Status</label>
+                    <div class="form-control-plaintext @(Model.IsEligible ? "text-success" : "text-danger")">
+                        @(Model.IsEligible ? "✓ Eligible" : "✗ Not Eligible")
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label asp-for="LastDate" class="form-label"></label>
+                    <input asp-for="LastDate" type="date" class="form-control" />
+                    <span asp-validation-for="LastDate" class="text-danger"></span>
+                    @* <small class="form-text text-muted">This is your last working day (required for bonus requests related to resignation).</small>
+                    @if (ViewBag.LastPreviousRequestDate != null)
+                    {
+                        <small class="form-text text-info d-block">Previous request on: @(((DateTime)ViewBag.LastPreviousRequestDate).ToShortDateString())</small>
+                    }
+                    else
+                    {
+                        <small class="form-text text-info d-block">No previous request found.</small>
+                    } *@
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ApprovedById" class="form-label"></label>
+                    <input asp-for="ApprovedById" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ApproverName" class="form-label"></label>
+                    <input asp-for="ApproverName" class="form-control" readonly />
+                    <small class="form-text text-muted">Your request will be routed to this approver.</small>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                @if (Model.IsEligible)
+                {
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2"></i>Submit Request
+                    </button>
+                }
+                <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Home
+                </a>
+            </div>
+
+            @if (!Model.IsEligible)
+            {
+                <div class="alert alert-info mt-4" role="alert">
+                    You are not currently eligible to submit a service bonus request.
+                </div>
+            }
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

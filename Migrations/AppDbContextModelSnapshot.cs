@@ -283,6 +283,9 @@ namespace HR_Products.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EmpeId");
@@ -530,7 +533,7 @@ namespace HR_Products.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestId"));
 
-                    b.Property<int>("Age")
+                    b.Property<int?>("Age")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ApprovalDate")
@@ -539,20 +542,52 @@ namespace HR_Products.Migrations
                     b.Property<int?>("ApprovedById")
                         .HasColumnType("int");
 
-                    b.Property<string>("Department")
-                        .IsRequired()
+                    b.Property<string>("ApproverName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<byte[]>("AttachFileContent")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("AttachFileName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("AttachFilePath")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<long?>("AttachFileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("AttachFileType")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("AttachFileUploadDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("EmpeId")
                         .HasColumnType("int");
 
+                    b.Property<string>("EmpeName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<decimal>("PensionSalary")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Position")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("Reason")
+                    b.Property<int?>("Reason")
                         .HasColumnType("int");
 
                     b.Property<string>("Remarks")
@@ -561,6 +596,12 @@ namespace HR_Products.Migrations
 
                     b.Property<DateTime>("RequestDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("ServiceBonus")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("ServiceYears")
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -574,6 +615,58 @@ namespace HR_Products.Migrations
                     b.HasIndex("EmpeId");
 
                     b.ToTable("PENSION");
+                });
+
+            modelBuilder.Entity("HR_Products.Models.Entitites.ServiceBonusRequest", b =>
+                {
+                    b.Property<int>("RequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestId"));
+
+                    b.Property<DateTime?>("ApprovalDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ApprovedById")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ApproverName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("BasicSalary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("BonusAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("EmpeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EmpeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastRequestDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("RequestDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ServiceYears")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RequestId");
+
+                    b.HasIndex("ApprovedById");
+
+                    b.HasIndex("EmpeId");
+
+                    b.ToTable("SERVICE_BONUS");
                 });
 
             modelBuilder.Entity("HR_Products.Models.Users", b =>
@@ -875,12 +968,29 @@ namespace HR_Products.Migrations
                     b.HasOne("HR_Products.Models.Entitites.EmployeeProfile", "EmployeeProfile")
                         .WithMany("PensionRequests")
                         .HasForeignKey("EmpeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Approver");
 
                     b.Navigation("EmployeeProfile");
+                });
+
+            modelBuilder.Entity("HR_Products.Models.Entitites.ServiceBonusRequest", b =>
+                {
+                    b.HasOne("HR_Products.Models.Entitites.EmployeeProfile", "Approver")
+                        .WithMany()
+                        .HasForeignKey("ApprovedById");
+
+                    b.HasOne("HR_Products.Models.Entitites.EmployeeProfile", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmpeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Approver");
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
